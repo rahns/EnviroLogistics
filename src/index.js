@@ -1,12 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {ThemeProvider} from "@material-ui/core";
+import {createTheme} from '@material-ui/core/styles';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#ffffee',
+      main: '#ffccbc',
+      dark: '#cb9b8c',
+      contrastText: '#000',
+    },
+    secondary: {
+      light: '#fffffa',
+      main: '#dcedc7',
+      dark: '#aabb96',
+      contrastText: '#fff',
+    },
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
