@@ -20,7 +20,7 @@ function App() {
         >
           Learn React
         </a>
-        <p><Button variant="contained" onClick={makeOptimiseAPICall} color="primary">Test API Call</Button></p>
+        <p><Button variant="contained" onClick={makeOptimiseAPICall} color="primary">Test API Call (Check JS Console)</Button></p>
       </header>
     </div>
   );
