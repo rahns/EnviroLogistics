@@ -9,7 +9,7 @@ import Fleet from './Fleet';
 // const mapboxAccessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
 
 export default function App() {
-  const [value, setValue] = React.useState(0);
+  const [navState, setValue] = React.useState(0);
   const [activePage, setPage] = React.useState();
 
   React.useEffect(() => setPage(<Trips pageUpdater={setPage}/>), []);  // useEffect runs only on first render
@@ -21,7 +21,7 @@ export default function App() {
       </div>
 
       <BottomNavigation showLabels 
-      value={value}
+      value={navState}
       onChange={(event, newValue) => {
         setValue(newValue);
         switch(newValue) {
