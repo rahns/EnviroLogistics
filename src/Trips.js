@@ -4,12 +4,11 @@ import AddTrip from './AddTrip';
 import {Button} from "@material-ui/core";
 
 export default function Trips(props) {
-  console.log(props)
   return (
     <div>
       Trips Shown Here
       <p><Button variant="contained" color="primary" onClick={() => props.pageUpdater(<AddTrip />)}>
-        Add Trip
+        Create Trip
       </Button></p>
     </div>
   );

@@ -4,7 +4,7 @@ import React from 'react';
 export default function AddTrip(props) {
   return (
     <div>
-      Add Trip Page
+      Create Trip Page
     </div>
   );
 }

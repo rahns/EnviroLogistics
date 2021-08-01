@@ -9,9 +9,10 @@ import Fleet from './Fleet';
 // const mapboxAccessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
 
 export default function App() {
-  const [navState, setValue] = React.useState(0);
+  const [navState, setValue] = React.useState(0);  // Set default state to 0
   const [activePage, setPage] = React.useState();
 
+  // Set default state of the page
   React.useEffect(() => setPage(<Trips pageUpdater={setPage}/>), []);  // useEffect runs only on first render
   
   return (
@@ -20,9 +21,7 @@ export default function App() {
         {activePage}  {/* Page contents are retrieved from the activePage variable*/}
       </div>
 
-      <BottomNavigation showLabels 
-      value={navState}
-      onChange={(event, newValue) => {
+      <BottomNavigation showLabels value={navState} onChange={(event, newValue) => {
         setValue(newValue);
         switch(newValue) {
           case 0:
@@ -35,10 +34,10 @@ export default function App() {
             setPage(<Fleet pageUpdater={setPage}/>);
             break;
           case 3:
-            // code block
+            // Logout code goes here
             break;
           default:
-            // code block
+            setPage(<Trips pageUpdater={setPage}/>);
         }
       }} 
       className="bottomBar">
