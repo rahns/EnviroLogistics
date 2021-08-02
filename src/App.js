@@ -16,7 +16,7 @@ export default function App() {
   React.useEffect(() => setPage(<Trips pageUpdater={setPage}/>), []);  // useEffect runs only on first render
   
   return (
-    <div className="App">
+    <div>
       <div className="App-content">
         {activePage}  {/* Page contents are retrieved from the activePage variable*/}
       </div>

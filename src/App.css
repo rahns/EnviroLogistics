@@ -1,29 +1,62 @@
-.App {
-  text-align: center;
-}
-
 .App-content {
-  background-color: #20242c;
-  min-height: calc(100vh - 76px);
-  display: flex;
-  flex-direction: column;
+  background-color: #172330;
+  min-height: calc(100vh - 56px - 2vw);
+  height: fit-content;
   font-size: calc(10px + 2vmin);
-  padding: 20px;
+  padding: 30px;
   padding-bottom: 56px;
-  color: #fff;
-}
-
-.bottomBar {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
+  color: rgb(0, 0, 0);
+  display:flex;
+  flex-direction: column;
 }
 
 .bottomBar{
 	position:fixed;
+  height: 56px;
 	bottom:0;
 	left:0;	
+  width: 100%;
+  background-color: #EEEEEE !important;
 	box-shadow: 0 -2px 5px -2px #333;
   
+}
+
+.divBox{
+  background-color: #fff;
+  width: fit-content;
+  height: fit-content;
+  padding: 10px;
+  float: left;
+  border-radius: 13px;
+  border: 1px solid rgba(128, 128, 128, 0.404);
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+}
+
+.roundedCorners{
+  border-radius: 13px !important;
+  margin-bottom: 10px;
+  border: 1px solid rgba(128, 128, 128, 0.404);
+}
+
+.select{
+  min-width: 20vw;
+}
+
+.row{
+  clear: both;
+  height: fit-content;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+
+.tripList{
+  width: calc(100% - 22px);
+}
+
+.fillWidth{
+  width: 100%;
+}
+
+.innerAccordian {
+  display: block !important;
 }
