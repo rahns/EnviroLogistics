@@ -1,10 +1,11 @@
 .App-content {
   background-color: #172330;
-  min-height: calc(100vh - 56px - 2vw);
+  min-height: calc(100vh - 76px);
   height: fit-content;
   font-size: calc(10px + 2vmin);
   padding: 30px;
   padding-bottom: 56px;
+  padding-top: 20px;
   color: rgb(0, 0, 0);
   display:flex;
   flex-direction: column;
