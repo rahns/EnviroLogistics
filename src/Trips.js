@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, FormControl, InputLabel, Select, MenuItem} from "@material-ui/core";
+import {Button, MenuItem, TextField} from "@material-ui/core";
 import TripAccordian from './TripPageComponents';
 import { getExampleTrips } from './Classes';
 
@@ -30,26 +30,27 @@ export default function Trips(props) {
   return (
     <>
     <div className="row" >
-      <div className="divBox" style={{marginRight: 5}}>
-        <FormControl>
-          <InputLabel shrink>
-            Filter
-          </InputLabel>
-          <Select
-            value={filter}
-            onChange={(event) => {setFilter(event.target.value)}}
-            className="select"
-          >
-            <MenuItem value={0}>All</MenuItem>
-            <MenuItem value={1}>Past</MenuItem>
-            <MenuItem value={2}>Current</MenuItem>
-            <MenuItem value={3}>Future</MenuItem>
-          </Select>
-        </FormControl>
+      <div className="divBox" style={{marginRight: 15, marginBottom: 10}}>
+        <TextField
+          label="Filter"
+          variant="outlined"
+          select
+          size='small'
+          style={{ width: 200 }}
+          SelectProps={{ value: filter, onChange: (event) => {setFilter(event.target.value)}}}
+        >
+          <MenuItem value={0}>All</MenuItem>
+          <MenuItem value={1}>Past</MenuItem>
+          <MenuItem value={2}>Current</MenuItem>
+          <MenuItem value={3}>Future</MenuItem>
+        </TextField> 
       </div>
-      <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip />)}>
-        Create Trip
-      </Button>
+      
+      <div className="divBox">
+        <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip />)}>
+          Create Trip
+        </Button>
+      </div>
     </div>
 
     <div className="row">
