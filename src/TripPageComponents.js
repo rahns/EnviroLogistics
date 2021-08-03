@@ -14,7 +14,6 @@ const useStyles = makeStyles(() => ({
 
 export default function TripAccordian(props) {
   const trip = props.trip;
-  console.log(props)
   const vehicleTrips = [];
   for (let i = 0; i < trip.vehicleTrips.length; i++) {
     vehicleTrips.push(<VehicleAccordian vehicleTrip={trip.vehicleTrips[i]} />)
