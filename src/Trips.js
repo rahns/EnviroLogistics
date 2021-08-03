@@ -47,13 +47,10 @@ export default function Trips(props) {
       </div>
       
       <div className="divBox">
-        <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip />)}>
+        <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater}/>)}>
           Create Trip
         </Button>
       </div>
-      <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater}/>)}>
-        Create Trip
-      </Button>
     </div>
 
     <div className="row">
