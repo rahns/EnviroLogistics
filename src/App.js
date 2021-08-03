@@ -13,10 +13,10 @@ import DateFnsUtils from '@date-io/date-fns';
 
 export default function App() {
   const [navState, setValue] = React.useState(0);  // Set default state to 0
-  const [activePage, setPage] = React.useState();
+  const [activePage, pageUpdater] = React.useState();
 
   // Set default state of the page
-  React.useEffect(() => setPage(<Trips pageUpdater={setPage}/>), []);  // useEffect runs only on first render
+  React.useEffect(() => pageUpdater(<Trips pageUpdater={pageUpdater}/>), []);  // useEffect runs only on first render
   
   return (
     <div>
@@ -29,19 +29,19 @@ export default function App() {
           setValue(newValue);
           switch(newValue) {
             case 0:
-              setPage(<Trips pageUpdater={setPage}/>);
+              pageUpdater(<Trips pageUpdater={pageUpdater}/>);
               break;
             case 1:
-              setPage(<Analyse pageUpdater={setPage}/>);
+              pageUpdater(<Analyse pageUpdater={pageUpdater}/>);
               break;
             case 2:
-              setPage(<Fleet pageUpdater={setPage}/>);
+              pageUpdater(<Fleet pageUpdater={pageUpdater}/>);
               break;
             case 3:
               // Logout code goes here
               break;
             default:
-              setPage(<Trips pageUpdater={setPage}/>);
+              pageUpdater(<Trips pageUpdater={pageUpdater}/>);
           }
         }} 
         className="bottomBar">
