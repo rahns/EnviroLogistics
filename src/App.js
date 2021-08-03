@@ -6,6 +6,9 @@ import Trips from './Trips';
 import Analyse from './Analyse';
 import Fleet from './Fleet';
 
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
 // const mapboxAccessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
 
 export default function App() {
@@ -17,35 +20,37 @@ export default function App() {
   
   return (
     <div>
-      <div className="App-content">
-        {activePage}  {/* Page contents are retrieved from the activePage variable*/}
-      </div>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}> 
+        <div className="App-content">
+          {activePage}  {/* Page contents are retrieved from the activePage variable*/}
+        </div>
 
-      <BottomNavigation showLabels value={navState} onChange={(event, newValue) => {
-        setValue(newValue);
-        switch(newValue) {
-          case 0:
-            setPage(<Trips pageUpdater={setPage}/>);
-            break;
-          case 1:
-            setPage(<Analyse pageUpdater={setPage}/>);
-            break;
-          case 2:
-            setPage(<Fleet pageUpdater={setPage}/>);
-            break;
-          case 3:
-            // Logout code goes here
-            break;
-          default:
-            setPage(<Trips pageUpdater={setPage}/>);
-        }
-      }} 
-      className="bottomBar">
-          <BottomNavigationAction label="Trips" icon={<Map />} />
-          <BottomNavigationAction label="Analysis" icon={<Timeline />} />
-          <BottomNavigationAction label="Fleet" icon={<LocalShipping />} />
-          <BottomNavigationAction label="Logout" icon={<ExitToApp />} />
-      </BottomNavigation>
+        <BottomNavigation showLabels value={navState} onChange={(event, newValue) => {
+          setValue(newValue);
+          switch(newValue) {
+            case 0:
+              setPage(<Trips pageUpdater={setPage}/>);
+              break;
+            case 1:
+              setPage(<Analyse pageUpdater={setPage}/>);
+              break;
+            case 2:
+              setPage(<Fleet pageUpdater={setPage}/>);
+              break;
+            case 3:
+              // Logout code goes here
+              break;
+            default:
+              setPage(<Trips pageUpdater={setPage}/>);
+          }
+        }} 
+        className="bottomBar">
+            <BottomNavigationAction label="Trips" icon={<Map />} />
+            <BottomNavigationAction label="Analysis" icon={<Timeline />} />
+            <BottomNavigationAction label="Fleet" icon={<LocalShipping />} />
+            <BottomNavigationAction label="Logout" icon={<ExitToApp />} />
+        </BottomNavigation>
+      </MuiPickersUtilsProvider>
     </div>
   );
 }

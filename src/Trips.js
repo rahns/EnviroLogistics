@@ -47,7 +47,7 @@ export default function Trips(props) {
           </Select>
         </FormControl>
       </div>
-      <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip />)}>
+      <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater}/>)}>
         Create Trip
       </Button>
     </div>
