@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import {Button, Accordion, AccordionActions, AccordionDetails, AccordionSummary, Divider} from "@material-ui/core";
+import {Button, Accordion, AccordionActions, AccordionDetails, AccordionSummary, Divider, Typography} from "@material-ui/core";
 import {ExpandMore} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/core/styles";
 
@@ -21,7 +21,9 @@ export default function TripAccordian(props) {
   return (
     <Accordion className="roundedCorners" classes={{root: useStyles().Accordion}} expanded={props.expanded === props.id} onChange={props.changeHandler(props.id)}>
       <AccordionSummary expandIcon={<ExpandMore />}>
-        {trip.date.toDateString()}
+        <Typography>{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear() + 
+        " - " + trip.consecutiveDuration + " minutes overall - " + trip.totalDuration + " minutes individual driving time - " + 
+        trip.distance + "km - " + trip.vehicleTrips.length + " vehicles - " + trip.emissions + " grams of CO"}<sub>2</sub></Typography>
       </AccordionSummary>
       <AccordionDetails className="innerAccordian">
         {vehicleTrips}
@@ -44,7 +46,9 @@ function VehicleAccordian(props) {
   return (
     <Accordion className={`roundedCorners fillWidth`} classes={{root: useStyles().Accordion}}>
       <AccordionSummary expandIcon={<ExpandMore />}>
-        {vehicle.toString()}
+        <Typography>{vehicle.toString()+ 
+        " - " + vehicleTrip.vehicleDuration + " minutes - " +
+        vehicleTrip.vehicleDistance + "km - " + vehicleTrip.vehicleEmissions + " grams of CO"}<sub>2</sub></Typography>
       </AccordionSummary>
       <AccordionDetails style={{display: "block"}}>
         {legs}

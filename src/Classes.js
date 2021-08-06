@@ -9,7 +9,7 @@ class Vehicle {
     }
 
     toString(){
-      return this.brand + " " + this.make + " " + this.year + " - " + this.rego;
+      return this.rego + " - " + this.brand + " " + this.make + " " + this.year;
     }
   };
   
@@ -22,11 +22,13 @@ class Vehicle {
   }
   
   class TripLeg {
-    constructor(startLocation, endLocation, duration, distance) {
+    constructor(startLocation, endLocation, duration, distance, vehicle) {
       this.startLocation = startLocation;
       this.endLocation = endLocation;
       this.duration = duration;
       this.distance = distance;
+      this.vehicle = vehicle;
+      this.legEmissions = vehicle.avgEmissionsPerKm * distance;
     }
   };
 
@@ -34,13 +36,28 @@ class Vehicle {
     constructor(vehicle, tripLegs) {
       this.vehicle = vehicle;
       this.tripLegs = tripLegs;
+      [this.vehicleDistance, this.vehicleDuration] = tripLegs.reduce(
+        (accumulator, currentTripLeg) => 
+        [accumulator[0] + currentTripLeg.distance, accumulator[1] + currentTripLeg.duration], [0, 0]
+        );
+      this.vehicleEmissions = vehicle.avgEmissionsPerKm * this.vehicleDistance;
     }
   }
   
   class Trip {
       constructor(date, vehicleTrips) {
         this.date = date;
-        this.vehicleTrips = vehicleTrips
+        this.vehicleTrips = vehicleTrips;
+        [this.distance, this.totalDuration, this.emissions, this.consecutiveDuration] = vehicleTrips.reduce(
+          (accumulator, currentVehicleTrip) =>
+          [
+            accumulator[0] + currentVehicleTrip.vehicleDistance, 
+            accumulator[1] + currentVehicleTrip.vehicleDuration,
+            accumulator[2] + currentVehicleTrip.vehicleEmissions,
+            Math.max(accumulator[3], currentVehicleTrip.vehicleDuration)
+          ], 
+          [0, 0, 0, 0]
+        );
       }
   };
   
@@ -52,30 +69,31 @@ const exampleLocation2 = new Location(136, -36, "Coles");
 const exampleLocation3 = new Location(127, -26, "Woolworths");
 const exampleTripPast = new Trip(new Date('8/2/2021'), [
     new VehicleTrip(exampleCar, [
-      new TripLeg(exampleLocation1, exampleLocation2, 56, 72),
-      new TripLeg(exampleLocation2, exampleLocation1, 56, 72)
+      new TripLeg(exampleLocation1, exampleLocation2, 56, 72, exampleCar),
+      new TripLeg(exampleLocation2, exampleLocation1, 56, 72, exampleCar)
     ]),
     new VehicleTrip(exampleCar2, [
-      new TripLeg(exampleLocation1, exampleLocation3, 56, 72),
-      new TripLeg(exampleLocation3, exampleLocation1, 56, 72)
+      new TripLeg(exampleLocation1, exampleLocation3, 56, 72, exampleCar2),
+      new TripLeg(exampleLocation3, exampleLocation1, 56, 72, exampleCar2)
     ])
 ]);
 const exampleTripCurrent = new Trip(new Date('8/3/2021'), [
   new VehicleTrip(exampleCar, [
-    new TripLeg(exampleLocation1, exampleLocation2, 56, 72),
-    new TripLeg(exampleLocation2, exampleLocation3, 56, 72)
+    new TripLeg(exampleLocation1, exampleLocation2, 56, 72, exampleCar),
+    new TripLeg(exampleLocation2, exampleLocation3, 56, 72, exampleCar)
   ]),
   new VehicleTrip(exampleCar2, [
-    new TripLeg(exampleLocation3, exampleLocation2, 56, 72),
-    new TripLeg(exampleLocation2, exampleLocation1, 56, 72)
+    new TripLeg(exampleLocation3, exampleLocation2, 56, 72, exampleCar2),
+    new TripLeg(exampleLocation2, exampleLocation1, 56, 72, exampleCar2)
   ])
 ]);
 const exampleTripFuture = new Trip(new Date('8/3/2029'), [
   new VehicleTrip(exampleCar, [
-    new TripLeg(exampleLocation3, exampleLocation2, 56, 72),
-    new TripLeg(exampleLocation2, exampleLocation3, 56, 72)
+    new TripLeg(exampleLocation3, exampleLocation2, 56, 72, exampleCar),
+    new TripLeg(exampleLocation2, exampleLocation3, 56, 72, exampleCar)
   ])
 ]);
+
 export function getExampleTrips() {
   return [exampleTripPast, exampleTripCurrent, exampleTripFuture];
 }
