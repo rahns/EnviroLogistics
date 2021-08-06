@@ -1,14 +1,15 @@
 import './App.css';
 import React from 'react';
-import {Button, Accordion, AccordionActions, AccordionDetails, AccordionSummary, Divider, Typography} from "@material-ui/core";
-import {ExpandMore} from '@material-ui/icons';
+import {Button, Accordion, AccordionActions, AccordionDetails, AccordionSummary, Divider, Typography, Chip, Tooltip} from "@material-ui/core";
+import {ExpandMore, Event, Timer, AvTimer, Straighten, LocalShipping, Nature, Room} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles(() => ({
   Accordion: {
     "&.MuiAccordion-root:before": {
       backgroundColor: "rgba(255, 255, 255, 0)"
-    }
+    },
+    maxWidth: "100%"
   }
 }));
 
@@ -16,16 +17,25 @@ export default function TripAccordian(props) {
   const trip = props.trip;
   const vehicleTrips = [];
   for (let i = 0; i < trip.vehicleTrips.length; i++) {
-    vehicleTrips.push(<VehicleAccordian vehicleTrip={trip.vehicleTrips[i]} />)
+    vehicleTrips.push(<VehicleAccordian vehicleTrip={trip.vehicleTrips[i]} />);
+    vehicleTrips.push(<div style={{margin: 7}}></div>);
   };
   return (
     <Accordion className="roundedCorners" classes={{root: useStyles().Accordion}} expanded={props.expanded === props.id} onChange={props.changeHandler(props.id)}>
-      <AccordionSummary expandIcon={<ExpandMore />}>
-        <Typography>{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear() + 
-        " - " + trip.consecutiveDuration + " minutes overall - " + trip.totalDuration + " minutes individual driving time - " + 
-        trip.distance + "km - " + trip.vehicleTrips.length + " vehicles - " + trip.emissions + " grams of CO"}<sub>2</sub></Typography>
+      <AccordionSummary expandIcon={<ExpandMore />} >
+        <div style={{display: "flex", flexDirection: "column"}}>
+          <div className="row"><Chip variant="outlined" icon={<Event />} label={<Typography variant="h6">{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear()}</Typography>} /></div>
+          <div className="row">
+            <Tooltip title="Consecutive Duration"><Chip icon={<Timer />} label={trip.consecutiveDuration + " minutes"}/></Tooltip>
+            <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={trip.totalDuration + " minutes"} /></Tooltip>
+            <Tooltip title="Total Distance"><Chip icon={<Straighten />} label={trip.distance + "km"} /></Tooltip>
+            <Tooltip title="Number of Vehicles Used"><Chip icon={<LocalShipping />} label={trip.vehicleTrips.length + " vehicle" + (trip.vehicleTrips.length === 1 ? "" : "s")} /></Tooltip>
+            <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Nature />} label={trip.emissions + " grams"} /></Tooltip>
+          </div>
+        </div>
       </AccordionSummary>
       <AccordionDetails className="innerAccordian">
+        <Typography style={{marginBottom: 5}}><b>Vehicles:</b></Typography>
         {vehicleTrips}
       </AccordionDetails>
       <Divider />
@@ -45,12 +55,16 @@ function VehicleAccordian(props) {
   };
   return (
     <Accordion className={`roundedCorners fillWidth`} classes={{root: useStyles().Accordion}}>
-      <AccordionSummary expandIcon={<ExpandMore />}>
-        <Typography>{vehicle.toString()+ 
-        " - " + vehicleTrip.vehicleDuration + " minutes - " +
-        vehicleTrip.vehicleDistance + "km - " + vehicleTrip.vehicleEmissions + " grams of CO"}<sub>2</sub></Typography>
+      <AccordionSummary expandIcon={<ExpandMore />} style={{minHeight: "1px !important"}}>
+        <div className="row">
+          <Tooltip title="Vehicle Used"><Chip variant="outlined" icon={<LocalShipping />} label={vehicle.toString()}/></Tooltip>
+          <Tooltip title="Duration"><Chip icon={<Timer />} label={vehicleTrip.vehicleDuration + " minutes"}/></Tooltip>
+          <Tooltip title="Distance"><Chip icon={<Straighten />} label={vehicleTrip.vehicleDistance + "km"} /></Tooltip>
+          <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Nature />} label={vehicleTrip.vehicleEmissions + " grams"} /></Tooltip>
+        </div>
       </AccordionSummary>
       <AccordionDetails style={{display: "block"}}>
+      <Typography style={{marginBottom: 5}}><b>Legs:</b></Typography>
         {legs}
       </AccordionDetails>
     </Accordion>
@@ -59,15 +73,15 @@ function VehicleAccordian(props) {
 
 function DisplayLeg(props) {
   return (
-    <div className="row" style={{margin: 0, padding: 0, paddingBottom: 10, marginRight: 20}}>
-      <div className={`divBox fillWidth`} style={{marginBottom: 10, display: "grid"}}>
-        <div style={{gridColumn: 1, gridRow: 1}}>
-        {props.leg.startLocation.nickname} to {props.leg.endLocation.nickname}
+    <div className="divBox" style={{marginBottom: 10, width: "calc(100% - 20px)"}}>
+      <div style={{display: "flex", flexDirection: "row"}}>
+        <div style={{margin: "auto", marginLeft: 0}}>
+          <Tooltip title="Waypoints" style={{margin: 4, marginLeft: 0}}><Chip variant="outlined" icon={<Room />} label={<>{props.leg.startLocation.nickname} to {props.leg.endLocation.nickname}</>}/></Tooltip>
+          <Tooltip title="Duration" style={{margin: 4, marginLeft: 0}}><Chip icon={<Timer />} label={props.leg.duration + " minutes"}/></Tooltip>
+          <Tooltip title="Distance" style={{margin: 4, marginLeft: 0}}><Chip icon={<Straighten />} label={props.leg.distance + "km"} /></Tooltip>
+          <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Nature />} label={props.leg.legEmissions + " grams"} /></Tooltip>
         </div>
-        <div style={{gridColumn: 2, gridRow: 1}}>
-        {props.leg.duration} minutes, {props.leg.distance}kms
-        </div>
-        <Button color="primary" style={{gridColumn: 3, gridRow: 1}}>Begin Navigation</Button>
+        <Button color="primary" size="small" style={{marginLeft: 8}}>Navigate</Button>
       </div>
     </div>
   )

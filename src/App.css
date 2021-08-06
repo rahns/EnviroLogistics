@@ -1,5 +1,5 @@
 .App-content {
-  background-color: #172330;
+  background-color: #1a395a;
   min-height: calc(100vh - 76px);
   height: fit-content;
   font-size: calc(19px);
@@ -27,6 +27,11 @@
   width: fit-content;
   height: fit-content;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
   float: left;
   border-radius: 13px;
   border: 1px solid rgba(128, 128, 128, 0.404);
@@ -35,7 +40,6 @@
 
 .roundedCorners{
   border-radius: 13px !important;
-  margin-bottom: 10px;
   border: 1px solid rgba(128, 128, 128, 0.404);
 }
 
@@ -44,8 +48,11 @@
 }
 
 .row{
-  clear: both;
-  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-items: left;
   margin-bottom: 10px;
   padding-top: 10px;
 }

@@ -21,7 +21,8 @@ export default function Trips(props) {
   
   let tripComponents = [];
   for (let i = 0; i < trips.length; i++) {
-    tripComponents.push(<TripAccordian trip={trips[i]} id={i} changeHandler={handleChange} expanded={expanded} />)
+    tripComponents.push(<TripAccordian trip={trips[i]} id={i} changeHandler={handleChange} expanded={expanded} />);
+    tripComponents.push(<div style={{margin: 4}}></div>);
   };
   if (tripComponents.length === 0){
     tripComponents = "No Trips to Show";
@@ -29,14 +30,13 @@ export default function Trips(props) {
 
   return (
     <>
-    <div className="row" >
-      <div className="divBox" style={{marginRight: 15, marginBottom: 10}}>
+    <div className="row">
+      <div className="divBox" style={{minWidth: "15%"}}>
         <TextField
           label="Filter"
           variant="outlined"
           select
           size='small'
-          style={{ width: 200 }}
           SelectProps={{ value: filter, onChange: (event) => {setFilter(event.target.value)}}}
         >
           <MenuItem value={0}>All</MenuItem>
@@ -46,7 +46,7 @@ export default function Trips(props) {
         </TextField> 
       </div>
       
-      <div className="divBox">
+      <div className="divBox" style={{minHeight: 40, marginLeft: "auto"}}>
         <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater}/>)}>
           Create Trip
         </Button>
