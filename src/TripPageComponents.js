@@ -72,16 +72,22 @@ function VehicleAccordian(props) {
 }
 
 function DisplayLeg(props) {
+  const origin_lat = props.leg.startLocation.lat;
+  const origin_long = props.leg.startLocation.long;
+  const dest_lat = props.leg.endLocation.lat;
+  const dest_long = props.leg.endLocation.long;
+  const navURL = "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=" + 
+    origin_lat + "," + origin_long + "&destination=" + dest_lat + "," + dest_long
   return (
     <div className="divBox" style={{marginBottom: 10, width: "calc(100% - 20px)"}}>
-      <div style={{display: "flex", flexDirection: "row"}}>
+      <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 5}}>
         <div style={{margin: "auto", marginLeft: 0}}>
           <Tooltip title="Waypoints" style={{margin: 4, marginLeft: 0}}><Chip variant="outlined" icon={<Room />} label={<>{props.leg.startLocation.nickname} to {props.leg.endLocation.nickname}</>}/></Tooltip>
           <Tooltip title="Duration" style={{margin: 4, marginLeft: 0}}><Chip icon={<Timer />} label={props.leg.duration + " minutes"}/></Tooltip>
           <Tooltip title="Distance" style={{margin: 4, marginLeft: 0}}><Chip icon={<Straighten />} label={props.leg.distance + "km"} /></Tooltip>
           <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Nature />} label={props.leg.legEmissions + " grams"} /></Tooltip>
         </div>
-        <Button color="primary" size="small" style={{marginLeft: 8}}>Navigate</Button>
+        <Button target="_blank" href={navURL} color="primary" size="small" >Navigate</Button>
       </div>
     </div>
   )

@@ -64,9 +64,9 @@ class Vehicle {
 
 const exampleCar = new Vehicle("Toyota", "Hilux", "2002", true, 13, "ABC123");
 const exampleCar2 = new Vehicle("Mazda", "6", "2012", true, 10, "KJC836");
-const exampleLocation1 = new Location(132, -32, "Depot");
-const exampleLocation2 = new Location(136, -36, "Coles");
-const exampleLocation3 = new Location(127, -26, "Woolworths");
+const exampleLocation1 = new Location(-37.93556359903012, 145.0612926526105, "Depot");
+const exampleLocation2 = new Location(-37.88547095750236, 145.08436342596195, "Coles");
+const exampleLocation3 = new Location(-37.94903921470658, 145.0406876435942, "Woolworths");
 const exampleTripPast = new Trip(new Date('8/2/2021'), [
     new VehicleTrip(exampleCar, [
       new TripLeg(exampleLocation1, exampleLocation2, 56, 72, exampleCar),
