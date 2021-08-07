@@ -97,3 +97,7 @@ const exampleTripFuture = new Trip(new Date('8/3/2029'), [
 export function getExampleTrips() {
   return [exampleTripPast, exampleTripCurrent, exampleTripFuture];
 }
+
+export function getExampleCars() {
+  return [exampleCar, exampleCar2]
+}
