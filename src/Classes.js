@@ -19,6 +19,10 @@ class Vehicle {
       this.long = long;
       this.nickname = nickname;
     }
+
+    toString(){
+      return this.nickname;
+    }
   }
   
   class TripLeg {
@@ -99,5 +103,9 @@ export function getExampleTrips() {
 }
 
 export function getExampleCars() {
-  return [exampleCar, exampleCar2]
+  return [exampleCar, exampleCar2];
+}
+
+export function getExampleLocations() {
+  return [exampleLocation1, exampleLocation2, exampleLocation3];
 }
