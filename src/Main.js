@@ -6,6 +6,9 @@ import Trips from './Trips';
 import Analyse from './Analyse';
 import Fleet from './Fleet';
 
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
 // const mapboxAccessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
 
 export default function Main(props) {
@@ -22,25 +25,32 @@ export default function Main(props) {
   };
 
   var user = props.firebase.auth().currentUser;
+  var username = user.displayName ? user.displayName : user.email
+  var database = props.firebase.database();
+  const addToDatabase = React.useCallback((path, data) => {
+    database.ref(path + user.uid).set({data});
+  }, [database, user.uid])
 
   // Set default state of the page
-  React.useEffect(() => pageUpdater(<Trips pageUpdater={pageUpdater}/>), []);  // useEffect runs only on first render
+  React.useEffect(() => pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase}/>), [addToDatabase]);  // useEffect runs only on first render
   
   return (
     <div>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}> 
       <div className="App-content">
         {activePage}  {/* Page contents are retrieved from the activePage variable*/}
-        <div className="row"><div className="divBox"><Typography>Signed-in as <b>{user.email}</b></Typography></div></div>
+        <div className="row"><div className="divBox"><Typography>Signed-in as <b>{username}</b></Typography></div></div>
       </div>
+      </MuiPickersUtilsProvider>
 
       <BottomNavigation showLabels value={navState} onChange={(event, newValue) => {
         setValue(newValue);
         switch(newValue) {
           case 0:
-            pageUpdater(<Trips pageUpdater={pageUpdater}/>);
+            pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase}/>);
             break;
           case 1:
-            pageUpdater(<Analyse pageUpdater={pageUpdater}/>);
+            pageUpdater(<Analyse pageUpdater={pageUpdater} addToDatabase={addToDatabase}/>);
             break;
           case 2:
             pageUpdater(<Fleet pageUpdater={pageUpdater}/>);
@@ -60,7 +70,7 @@ export default function Main(props) {
       </BottomNavigation>
       <Dialog open={dialogState} onClose={handleDialogClose}>
         <DialogTitle >Are you sure you want to logout?</DialogTitle>
-        <DialogContent>You are currently signed-in as <b>{user.email}</b></DialogContent>
+        <DialogContent>You are currently signed-in as <b>{username}</b></DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
             Cancel

@@ -3,6 +3,7 @@ import './index.css';
 import Main from './Main';
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/database";
 import { FirebaseAuthProvider, IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import {Typography, Snackbar } from "@material-ui/core";
@@ -16,6 +17,7 @@ var firebaseConfig = {
     storageBucket: "envirologistics-team17.appspot.com",
     messagingSenderId: "528290527068",
     appId: "1:528290527068:web:f4c3fe45f5ad568f2eb399",
+    databaseURL: "https://envirologistics-team17-default-rtdb.asia-southeast1.firebasedatabase.app/",
     measurementId: "G-9R4DEPNWPE"
   };
   
@@ -28,7 +30,7 @@ export default function App(props) {
         setMsgOpen(true);
     };
 
-    const handleClose = (event, reason) => {
+    const handleMsgClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -36,7 +38,7 @@ export default function App(props) {
         setMsgOpen(false);
     };
       
-      const loginUIConfig = {
+    const loginUIConfig = {
         signInFlow: 'popup',
         signInOptions: [
           firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -47,13 +49,12 @@ export default function App(props) {
         ],
         callbacks: {
           signInSuccessWithAuthResult: handleLogin,
-        },
-        requireDisplayName: false
+        }
       };
     return (
         <FirebaseAuthProvider {...firebaseConfig} firebase={firebase}>
             <IfFirebaseAuthed>
-                <Main firebase={firebase}/>
+                <Main firebase={firebase} />
             </IfFirebaseAuthed>
             <IfFirebaseUnAuthed>
                 <div className={`App-content`} style={{justifyContent: "center", alignItems: "center"}}>
@@ -64,9 +65,9 @@ export default function App(props) {
                     </div>
                 </div>
             </IfFirebaseUnAuthed>
-            <Snackbar open={msgState} autoHideDuration={6000} onClose={handleClose}>
-                <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity="success">
-                    Sign-in successful. Welcome {firebase.auth().currentUser !== null ? firebase.auth().currentUser.email : ""}
+            <Snackbar open={msgState} autoHideDuration={6000} onClose={handleMsgClose}>
+                <MuiAlert elevation={6} variant="filled" onClose={handleMsgClose} severity="success">
+                    Sign-in successful. Welcome, {firebase.auth().currentUser == null ? "" : (firebase.auth().currentUser.displayName ? firebase.auth().currentUser.displayName: firebase.auth().currentUser.email)}
                 </MuiAlert>
             </Snackbar>
         </FirebaseAuthProvider>

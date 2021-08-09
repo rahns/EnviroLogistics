@@ -7,7 +7,15 @@ import { getExampleTrips } from './Classes';
 
 export default function Trips(props) {
   const [filter, setFilter] = React.useState(0);
-  let trips = getExampleTrips();
+  const [trips, setTrips] = React.useState([]);
+
+  const testTrips = getExampleTrips();
+  const addTestTrips = () => {
+    console.log(props)
+    for (let i = 0; i < testTrips.length; i++){
+      props.addToDatabase('trips/', JSON.stringify(testTrips[i]));
+    }
+  }
   
   const [expanded, setExpanded] = React.useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
@@ -16,7 +24,7 @@ export default function Trips(props) {
 
   
   if (filter !== 0){
-    trips = trips.filter((trip) => new Date(trip.date.toDateString()) < (new Date(new Date().toDateString())) && filter === 1 ? true : (trip.date.toDateString()) === (new Date().toDateString()) && filter === 2 ? true : (new Date(trip.date.toDateString()) > (new Date(new Date().toDateString())) && filter === 3) ? true : false);
+    setTrips(trips.filter((trip) => new Date(trip.date.toDateString()) < (new Date(new Date().toDateString())) && filter === 1 ? true : (trip.date.toDateString()) === (new Date().toDateString()) && filter === 2 ? true : (new Date(trip.date.toDateString()) > (new Date(new Date().toDateString())) && filter === 3) ? true : false));
   }
   
   let tripComponents = [];
@@ -44,6 +52,10 @@ export default function Trips(props) {
           <MenuItem value={2}>Current</MenuItem>
           <MenuItem value={3}>Future</MenuItem>
         </TextField> 
+      </div>
+
+      <div className="divBox" style={{minHeight: 40}}>
+        <Button onClick={() => addTestTrips()}>Add Some Test Trips</Button>
       </div>
       
       <div className="divBox" style={{minHeight: 40, marginLeft: "auto"}}>
