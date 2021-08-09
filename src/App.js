@@ -1,68 +1,74 @@
-import './App.css';
 import React from 'react';
-import {BottomNavigation, BottomNavigationAction} from "@material-ui/core";
-import {Map, Timeline, LocalShipping, ExitToApp} from '@material-ui/icons';
-import Trips from './Trips';
-import Analyse from './Analyse';
-import Fleet from './Fleet';
+import './index.css';
+import Main from './Main';
+import firebase from "firebase/app";
+import "firebase/auth";
+import { FirebaseAuthProvider, IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import {Typography, Snackbar } from "@material-ui/core";
+import MuiAlert from '@material-ui/lab/Alert';
 
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
 
-// const mapboxAccessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
-
-export default function App() {
-  const [navState, setValue] = React.useState(0);  // Set default state to 0
-  const [activePage, pageUpdater] = React.useState();
-
-  // Set default state of the page
-  React.useEffect(() => pageUpdater(<Trips pageUpdater={pageUpdater}/>), []);  // useEffect runs only on first render
+var firebaseConfig = {
+    apiKey: "AIzaSyBrec3dqroIgZLstvNTt14HsRRwHLFWw1w",
+    authDomain: "envirologistics-team17.firebaseapp.com",
+    projectId: "envirologistics-team17",
+    storageBucket: "envirologistics-team17.appspot.com",
+    messagingSenderId: "528290527068",
+    appId: "1:528290527068:web:f4c3fe45f5ad568f2eb399",
+    measurementId: "G-9R4DEPNWPE"
+  };
   
-  return (
-    <div>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}> 
-        <div className="App-content">
-          {activePage}  {/* Page contents are retrieved from the activePage variable*/}
-        </div>
+firebase.initializeApp(firebaseConfig);
 
-        <BottomNavigation showLabels value={navState} onChange={(event, newValue) => {
-          setValue(newValue);
-          switch(newValue) {
-            case 0:
-              pageUpdater(<Trips pageUpdater={pageUpdater}/>);
-              break;
-            case 1:
-              pageUpdater(<Analyse pageUpdater={pageUpdater}/>);
-              break;
-            case 2:
-              pageUpdater(<Fleet pageUpdater={pageUpdater}/>);
-              break;
-            case 3:
-              // Logout code goes here
-              break;
-            default:
-              pageUpdater(<Trips pageUpdater={pageUpdater}/>);
-          }
-        }} 
-        className="bottomBar">
-            <BottomNavigationAction label="Trips" icon={<Map />} />
-            <BottomNavigationAction label="Analysis" icon={<Timeline />} />
-            <BottomNavigationAction label="Fleet" icon={<LocalShipping />} />
-            <BottomNavigationAction label="Logout" icon={<ExitToApp />} />
-        </BottomNavigation>
-      </MuiPickersUtilsProvider>
-    </div>
-  );
+export default function App(props) { 
+    const [msgState, setMsgOpen] = React.useState(false);
+
+    const handleLogin = () => {
+        setMsgOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setMsgOpen(false);
+    };
+      
+      const loginUIConfig = {
+        signInFlow: 'popup',
+        signInOptions: [
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          {
+            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            requireDisplayName: false
+          },
+        ],
+        callbacks: {
+          signInSuccessWithAuthResult: handleLogin,
+        },
+        requireDisplayName: false
+      };
+    return (
+        <FirebaseAuthProvider {...firebaseConfig} firebase={firebase}>
+            <IfFirebaseAuthed>
+                <Main firebase={firebase}/>
+            </IfFirebaseAuthed>
+            <IfFirebaseUnAuthed>
+                <div className={`App-content`} style={{justifyContent: "center", alignItems: "center"}}>
+                    <div className="divBox">
+                    <Typography variant="h6" style={{textAlign: "center"}}>Welcome to EnviroLogistics</Typography>
+                    <Typography style={{textAlign: "center"}}>Please sign-in:</Typography>
+                    <StyledFirebaseAuth uiConfig={loginUIConfig} firebaseAuth={firebase.auth()} />
+                    </div>
+                </div>
+            </IfFirebaseUnAuthed>
+            <Snackbar open={msgState} autoHideDuration={6000} onClose={handleClose}>
+                <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity="success">
+                    Sign-in successful. Welcome {firebase.auth().currentUser !== null ? firebase.auth().currentUser.email : ""}
+                </MuiAlert>
+            </Snackbar>
+        </FirebaseAuthProvider>
+    )
 }
-
-// function makeOptimiseAPICall() {
-//   var url = "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/-122.42,37.78;-122.48,37.73;-122.45,37.91?access_token=" + mapboxAccessToken + "&annotations=duration,distance"
-
-//   var xmlHttp = new XMLHttpRequest();
-//   xmlHttp.open( "GET", url, false);
-//   xmlHttp.send();
-//   var response = JSON.parse(xmlHttp.responseText);
-//   console.log(response);
-//   return response;
-// }
-
