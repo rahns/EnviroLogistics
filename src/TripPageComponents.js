@@ -24,7 +24,7 @@ export default function TripAccordian(props) {
     <Accordion className="roundedCorners" classes={{root: useStyles().Accordion}} expanded={props.expanded === props.id} onChange={props.changeHandler(props.id)}>
       <AccordionSummary expandIcon={<ExpandMore />} >
         <div style={{display: "flex", flexDirection: "column"}}>
-          <div className="row"><Chip variant="outlined" icon={<Event />} label={<Typography variant="h6">{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear()}</Typography>} /></div>
+          <div className="row"><Chip variant="outlined" color='primary' icon={<Event />} label={<Typography variant="h6">{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear()}</Typography>} /></div>
           <div className="row">
             <Tooltip title="Consecutive Duration"><Chip icon={<Timer />} label={trip.consecutiveDuration + " minutes"}/></Tooltip>
             <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={trip.totalDuration + " minutes"} /></Tooltip>
