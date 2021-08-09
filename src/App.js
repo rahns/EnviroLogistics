@@ -30,6 +30,9 @@ export default function App(props) {
 
     const handleLogin = () => {
         setMsgOpen(true);
+        if (!firebase.auth().currentUser.emailVerified) {
+            firebase.auth().currentUser.sendEmailVerification();
+        }
     };
 
     const handleMsgClose = (event, reason) => {
