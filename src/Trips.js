@@ -83,10 +83,6 @@ export default function Trips(props) {
           <MenuItem value={3}>Future</MenuItem>
         </TextField> 
       </div>
-
-      <div className="divBox" style={{minHeight: 40}}>
-        <Button onClick={() => addTestTrips()}>Add Some Test Trips</Button>
-      </div>
       
       <div className="divBox" style={{minHeight: 40, marginLeft: "auto"}}>
         <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user}/>)}>
@@ -98,6 +94,12 @@ export default function Trips(props) {
     <div className="row">
       <div className={`divBox tripList`}>
           {tripComponents}
+      </div>
+    </div>
+
+    <div className="row">
+      <div className="divBox">
+        <Button onClick={() => addTestTrips()}>Add Some Test Trips</Button>
       </div>
     </div>
   </>
