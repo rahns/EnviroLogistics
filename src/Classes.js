@@ -48,10 +48,11 @@ class Vehicle {
     }
   }
   
-  class Trip {
+  export class Trip {
       constructor(date, vehicleTrips) {
         this.date = date;
         this.vehicleTrips = vehicleTrips;
+        if (vehicleTrips !== undefined){
         [this.distance, this.totalDuration, this.emissions, this.consecutiveDuration] = vehicleTrips.reduce(
           (accumulator, currentVehicleTrip) =>
           [
@@ -61,10 +62,22 @@ class Vehicle {
             Math.max(accumulator[3], currentVehicleTrip.vehicleDuration)
           ], 
           [0, 0, 0, 0]
-        );
+        );}
       }
-  };
-  
+      objectToInstance(obj) {
+        this.consecutiveDuration = obj.consecutiveDuration;
+        this.date = new Date(Date.parse(obj.date));
+        this.distance = obj.distance;
+        this.emissions = obj.emissions;
+        this.totalDuration = obj.totalDuration;
+        this.vehicleTrips = obj.vehicleTrips.map((e) => new VehicleTrip(
+          new Vehicle(e.vehicle.brand, e.vehicle.make, e.vehicle.year, e.vehicle.autoTransmission, e.vehicle.avgEmissionsPerKm, e.vehicle.rego), 
+          e.tripLegs.map((t) => new TripLeg(new Location(t.startLocation.lat, t.startLocation.long, t.startLocation.nickname),
+          new Location(t.endLocation.lat, t.endLocation.long, t.endLocation.nickname),t.duration, t.distance, 
+          new Vehicle(t.vehicle.brand, t.vehicle.make, t.vehicle.year, t.vehicle.autoTransmission, t.vehicle.avgEmissionsPerKm, t.vehicle.rego)))))
+        
+      }
+  };  
 
 const exampleCar = new Vehicle("Toyota", "Hilux", "2002", true, 13, "ABC123");
 const exampleCar2 = new Vehicle("Mazda", "6", "2012", true, 10, "KJC836");

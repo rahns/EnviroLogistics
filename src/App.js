@@ -7,6 +7,7 @@ import "firebase/database";
 import { FirebaseAuthProvider, IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import {Typography, Snackbar } from "@material-ui/core";
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 
 
@@ -22,6 +23,7 @@ var firebaseConfig = {
   };
   
 firebase.initializeApp(firebaseConfig);
+export const database = firebase.database();
 
 export default function App(props) { 
     const [msgState, setMsgOpen] = React.useState(false);
@@ -51,25 +53,38 @@ export default function App(props) {
           signInSuccessWithAuthResult: handleLogin,
         }
       };
+
+    const theme = createTheme({
+        palette: {
+          primary: {
+            main: '#614385',
+          },
+          secondary: {
+            main: '#9a53a0',
+          },
+        },
+      });
     return (
         <FirebaseAuthProvider {...firebaseConfig} firebase={firebase}>
-            <IfFirebaseAuthed>
-                <Main firebase={firebase} />
-            </IfFirebaseAuthed>
-            <IfFirebaseUnAuthed>
-                <div className={`App-content`} style={{justifyContent: "center", alignItems: "center"}}>
-                    <div className="divBox">
-                    <Typography variant="h6" style={{textAlign: "center"}}>Welcome to EnviroLogistics</Typography>
-                    <Typography style={{textAlign: "center"}}>Please sign-in:</Typography>
-                    <StyledFirebaseAuth uiConfig={loginUIConfig} firebaseAuth={firebase.auth()} />
+            <ThemeProvider theme={theme}>
+                <IfFirebaseAuthed>
+                        <Main firebase={firebase} />
+                </IfFirebaseAuthed>
+                <IfFirebaseUnAuthed>
+                    <div className={`App-content`} style={{justifyContent: "center", alignItems: "center"}}>
+                        <div className="divBox">
+                        <Typography variant="h6" style={{textAlign: "center"}}>Welcome to EnviroLogistics</Typography>
+                        <Typography style={{textAlign: "center"}}>Please sign-in:</Typography>
+                        <StyledFirebaseAuth uiConfig={loginUIConfig} firebaseAuth={firebase.auth()} />
+                        </div>
                     </div>
-                </div>
-            </IfFirebaseUnAuthed>
-            <Snackbar open={msgState} autoHideDuration={6000} onClose={handleMsgClose}>
-                <MuiAlert elevation={6} variant="filled" onClose={handleMsgClose} severity="success">
-                    Sign-in successful. Welcome, {firebase.auth().currentUser == null ? "" : (firebase.auth().currentUser.displayName ? firebase.auth().currentUser.displayName: firebase.auth().currentUser.email)}
-                </MuiAlert>
-            </Snackbar>
+                </IfFirebaseUnAuthed>
+                <Snackbar open={msgState} autoHideDuration={6000} onClose={handleMsgClose}>
+                    <MuiAlert elevation={6} variant="filled" onClose={handleMsgClose} severity="success">
+                        Sign-in successful. Welcome, {firebase.auth().currentUser == null ? "" : (firebase.auth().currentUser.displayName ? firebase.auth().currentUser.displayName: firebase.auth().currentUser.email)}
+                    </MuiAlert>
+                </Snackbar>
+            </ThemeProvider>
         </FirebaseAuthProvider>
     )
 }

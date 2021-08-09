@@ -50,7 +50,7 @@ export default function AddTrip(props) {
 
 
         <ButtonGroup color="primary" aria-label="outlined primary button group">
-          <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<Trips pageUpdater={props.pageUpdater} />)}>Cancel</Button>
+          <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<Trips pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user}/>)}>Cancel</Button>
           <Button variant="contained" color="secondary">Optimise</Button>
           <Button variant="contained" color="secondary">Save</Button>
         </ButtonGroup>

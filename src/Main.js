@@ -1,4 +1,5 @@
 import './App.css';
+import { database } from './App';
 import React from 'react';
 import {BottomNavigation, BottomNavigationAction, Typography, Dialog, DialogActions, DialogTitle, Button, DialogContent} from "@material-ui/core";
 import {Map, Timeline, LocalShipping, ExitToApp} from '@material-ui/icons';
@@ -26,20 +27,20 @@ export default function Main(props) {
 
   var user = props.firebase.auth().currentUser;
   var username = user.displayName ? user.displayName : user.email
-  var database = props.firebase.database();
-  const addToDatabase = React.useCallback((path, data) => {
-    database.ref(path + user.uid).set({data});
-  }, [database, user.uid])
+  const addToDatabase = (path, data) => {
+    database.ref(path + user.uid).push({data});
+  }
 
   // Set default state of the page
-  React.useEffect(() => pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase}/>), [addToDatabase]);  // useEffect runs only on first render
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user}/>), []);  // useEffect runs only on first render
   
   return (
     <div>
       <MuiPickersUtilsProvider utils={DateFnsUtils}> 
       <div className="App-content">
         {activePage}  {/* Page contents are retrieved from the activePage variable*/}
-        <div className="row"><div className="divBox"><Typography>Signed-in as <b>{username}</b></Typography></div></div>
+        <div className="row"><div className="divBox"><Typography>Signed-in as: <b>{username}</b></Typography></div></div>
       </div>
       </MuiPickersUtilsProvider>
 
@@ -47,7 +48,7 @@ export default function Main(props) {
         setValue(newValue);
         switch(newValue) {
           case 0:
-            pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase}/>);
+            pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user} />);
             break;
           case 1:
             pageUpdater(<Analyse pageUpdater={pageUpdater} addToDatabase={addToDatabase}/>);
