@@ -37,12 +37,12 @@ export default function TripAccordian(props) {
 
   return (
     <Accordion className="roundedCorners" classes={{root: useStyles().Accordion}} expanded={props.expanded === props.id} onChange={props.changeHandler(props.id)}>
-      <AccordionSummary expandIcon={<ExpandMore />} >
+      <AccordionSummary expandIcon={<ExpandMore />} style={{marginLeft: 3}}>
         <div style={{display: "flex", flexDirection: "column"}}>
           <div className="row"><Chip variant="outlined" color='primary' icon={<Event />} label={<Typography variant="h6">{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear()}</Typography>} /></div>
           <div className="row">
             <Tooltip title="Consecutive Duration"><Chip icon={<Timer />} label={"Duration: " + trip.consecutiveDuration + " minutes"}/></Tooltip>
-            <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Summed Individual Times: " + trip.totalDuration + " minutes"} /></Tooltip>
+            <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Summed vehicle times: " + trip.totalDuration + " minutes"} /></Tooltip>
             <Tooltip title="Total Distance"><Chip icon={<Straighten />} label={trip.distance + "km"} /></Tooltip>
             <Tooltip title="Number of Vehicles Used"><Chip icon={<LocalShipping />} label={trip.vehicleTrips.length + " vehicle" + (trip.vehicleTrips.length === 1 ? "" : "s")} /></Tooltip>
             <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={trip.emissions + " grams of CO2"} /></Tooltip>
