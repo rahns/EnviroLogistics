@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import {Button} from "@material-ui/core";
-import graph from './GraphPage'
+import Graph from './GraphPage'
 import Report from './ReportPage'
 import { Title } from '@material-ui/icons';
 
@@ -14,7 +14,7 @@ export default function Analyse(props) {
         Report
       </Button>
       <Button variant = "contained" color = "secondary" style = {{marginLeft: 50, marginTop:100}}
-      onClick={() => props.pageUpdater(<graph pageUpdater={props.pageUpdater}/>)}>
+      onClick={() => props.pageUpdater(<Graph pageUpdater={props.pageUpdater}/>)}>
         Graph Analysis
       </Button>
 
