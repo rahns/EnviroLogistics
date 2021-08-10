@@ -64,7 +64,8 @@ class Vehicle {
           [0, 0, 0, 0]
         );}
       }
-      objectToInstance(obj) {
+      objectToInstance(obj, dbKey) {
+        this.dbKey = dbKey;
         this.consecutiveDuration = obj.consecutiveDuration;
         this.date = new Date(Date.parse(obj.date));
         this.distance = obj.distance;

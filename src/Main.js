@@ -1,7 +1,7 @@
 import './App.css';
 import { database } from './App';
 import React from 'react';
-import {BottomNavigation, BottomNavigationAction, Typography, Dialog, DialogActions, DialogTitle, Button, DialogContent} from "@material-ui/core";
+import {BottomNavigation, BottomNavigationAction, Typography, Dialog, DialogActions, DialogTitle, Button, DialogContent } from "@material-ui/core";
 import {Map, Timeline, LocalShipping, ExitToApp} from '@material-ui/icons';
 import Trips from './Trips';
 import Analyse from './Analyse';
@@ -84,15 +84,3 @@ export default function Main(props) {
     </div>
   );
 }
-
-// function makeOptimiseAPICall() {
-//   var url = "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/-122.42,37.78;-122.48,37.73;-122.45,37.91?access_token=" + mapboxAccessToken + "&annotations=duration,distance"
-
-//   var xmlHttp = new XMLHttpRequest();
-//   xmlHttp.open( "GET", url, false);
-//   xmlHttp.send();
-//   var response = JSON.parse(xmlHttp.responseText);
-//   console.log(response);
-//   return response;
-// }
-
