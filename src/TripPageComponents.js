@@ -42,7 +42,7 @@ export default function TripAccordian(props) {
           <div className="row"><Chip variant="outlined" color='primary' icon={<Event />} label={<Typography variant="h6">{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear()}</Typography>} /></div>
           <div className="row">
             <Tooltip title="Consecutive Duration"><Chip icon={<Timer />} label={"Duration: " + trip.consecutiveDuration + " minutes"}/></Tooltip>
-            <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Summed vehicle times: " + trip.totalDuration + " minutes"} /></Tooltip>
+            <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Summed times: " + trip.totalDuration + " minutes"} /></Tooltip>
             <Tooltip title="Total Distance"><Chip icon={<Straighten />} label={trip.distance + "km"} /></Tooltip>
             <Tooltip title="Number of Vehicles Used"><Chip icon={<LocalShipping />} label={trip.vehicleTrips.length + " vehicle" + (trip.vehicleTrips.length === 1 ? "" : "s")} /></Tooltip>
             <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={trip.emissions + " grams of CO2"} /></Tooltip>

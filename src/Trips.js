@@ -2,7 +2,7 @@ import './App.css';
 import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, MenuItem, TextField } from "@material-ui/core";
+import {Button, MenuItem, TextField, Typography } from "@material-ui/core";
 import TripAccordian from './TripPageComponents';
 import { getExampleTrips, Trip } from './Classes';
 
@@ -69,7 +69,7 @@ export default function Trips(props) {
     tripComponents.push(<div style={{margin: 4}}></div>);
   };
   if (tripComponents.length === 0){
-    tripComponents = "No Trips to Show";
+    tripComponents = <Typography variant="h6">No Trips to Show</Typography>;
   }
 
   return (
