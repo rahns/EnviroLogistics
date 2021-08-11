@@ -2,7 +2,7 @@ import './App.css';
 import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, MenuItem, TextField} from "@material-ui/core";
+import {Button, MenuItem, TextField, Typography } from "@material-ui/core";
 import TripAccordian from './TripPageComponents';
 import { getExampleTrips, Trip } from './Classes';
 
@@ -25,18 +25,26 @@ export default function Trips(props) {
   const [currentTripsList, setTrips] = React.useState([]);
   const [allTripsList, setAllTrips] = React.useState([]);
 
+  const [expanded, setExpanded] = React.useState(false);
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
   React.useEffect(() =>
   database.ref("trips/" + props.user.uid).on("value", snapshot => {
     let allTrips = [];
     if (snapshot) {
-      snapshot.forEach(snap => {let i = new Trip(); i.objectToInstance(JSON.parse(snap.val().data));
+      snapshot.forEach(snap => {
+        let i = new Trip(); 
+        i.objectToInstance(JSON.parse(snap.val().data), snap.key);
         allTrips.push(i);
-      });
+        }
+      );
     }
-    
     setAllTrips(allTrips);
     setTrips(filterTrips(filter, allTrips, currentTripsList));
     setFilter([filter[0], false]);
+    setExpanded(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [])
 
@@ -47,29 +55,33 @@ export default function Trips(props) {
     }
   }
   
-  const [expanded, setExpanded] = React.useState(false);
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
 
   if (filter[1]) {
-    setTrips(filterTrips(filter, allTripsList, currentTripsList));
+    var trips = filterTrips(filter, allTripsList, currentTripsList);
+    trips.sort((a, b) => new Date(b.date) - new Date(a.date));
+    setTrips(trips);
     setFilter([filter[0], false]);
   }
  
   let tripComponents = [];
   for (let i = 0; i < currentTripsList.length; i++) {
-    tripComponents.push(<TripAccordian trip={currentTripsList[i]} id={i} changeHandler={handleChange} expanded={expanded} />);
+    tripComponents.push(<TripAccordian trip={currentTripsList[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
     tripComponents.push(<div style={{margin: 4}}></div>);
   };
   if (tripComponents.length === 0){
-    tripComponents = "No Trips to Show";
+    tripComponents = <Typography variant="h6">No Trips to Show</Typography>;
   }
 
   return (
     <>
     <div className="row">
-      <div className="divBox" style={{minWidth: "15%"}}>
+    <div className="divBox" style={{minHeight: 40}}>
+        <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user}/>)}>
+          Create Trip
+        </Button>
+      </div>
+
+      <div className="divBox" style={{minWidth: "15%", marginLeft: "auto"}}>
         <TextField
           label="Filter"
           variant="outlined"
@@ -82,13 +94,7 @@ export default function Trips(props) {
           <MenuItem value={2}>Current</MenuItem>
           <MenuItem value={3}>Future</MenuItem>
         </TextField> 
-      </div>
-      
-      <div className="divBox" style={{minHeight: 40, marginLeft: "auto"}}>
-        <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user}/>)}>
-          Create Trip
-        </Button>
-      </div>
+      </div>     
     </div>
 
     <div className="row">
