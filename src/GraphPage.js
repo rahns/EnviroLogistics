@@ -36,10 +36,10 @@ const data = [
 
 export default function Graph(props) {
         return  (<div>
-            <h4 style = {{marginLeft: 400  , marginTop: 100}}>Time Series Chart</h4>
+        
             <LineChart
-              width={500}
-              height={300}
+              width={1000}
+              height={800}
               data={data}
               margin={{
                 top: 5,
@@ -48,7 +48,7 @@ export default function Graph(props) {
                 bottom: 5
 
               }}
-              style = {{marginLeft: 450  , marginTop: 200}} 
+              style = {{marginLeft: 450  , marginTop: 100}} 
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
