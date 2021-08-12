@@ -21,15 +21,18 @@ export default function Main(props) {
     setDialogState(true);
   };
 
-  const handleDialogClose = () => {
-    setDialogState(false);
-  };
-
   var user = props.firebase.auth().currentUser;
   var username = user.displayName ? user.displayName : user.email
   const addToDatabase = (path, data) => {
     database.ref(path + user.uid).push({data});
   }
+
+  const handleDialogClose = () => {
+    setDialogState(false);
+    pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user} />);
+    setValue(0);
+  };
+
 
   // Set default state of the page
   // eslint-disable-next-line react-hooks/exhaustive-deps
