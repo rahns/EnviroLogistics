@@ -1,10 +1,10 @@
 import './App.css';
 import React from 'react';
 import {Button} from "@material-ui/core";
-import { getExampleCars , Vehicle} from './Classes';
+import { getExampleCars , Vehicle, PopupModal} from './Classes';
 import VehicleCard from './FleetPageComponents';
 import { database } from './App';
-//import ReactDOM from 'react-dom';
+import Popup from 'reactjs-popup';
 
 
 function filterVehicles(filter, allVehicles, currentVehicles) {
@@ -18,7 +18,7 @@ function filterVehicles(filter, allVehicles, currentVehicles) {
 
 export default function Fleet(props) {
   const [filter, setFilter] = React.useState([0, true]);
-  const [currentVehicles, setVehicles] = React.useState([]);
+  const [filteredVehicles, setVehicles] = React.useState([]);
   const [allVehicles, setAllVehicles] = React.useState([]);
 
   const [expanded, setExpanded] = React.useState(false);
@@ -27,8 +27,8 @@ export default function Fleet(props) {
   };
 
   let vehicleComponents = [];
-  for (let i = 0; i < currentVehicles.length; i++) {
-    vehicleComponents.push(<VehicleCard vehicle={currentVehicles[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
+  for (let i = 0; i < filteredVehicles.length; i++) {
+    vehicleComponents.push(<VehicleCard vehicle={filteredVehicles[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
     vehicleComponents.push(<div style={{margin: 4}}></div>);
   };
   if (vehicleComponents.length === 0){
@@ -47,7 +47,7 @@ export default function Fleet(props) {
       );
     }
     setAllVehicles(allVehicles);
-    setVehicles(filterVehicles(filter, allVehicles, currentVehicles));
+    setVehicles(filterVehicles(filter, allVehicles, filteredVehicles));
     setFilter([filter[0], false]);
     setExpanded(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,22 +63,90 @@ export default function Fleet(props) {
   return (
     <>
       <div className="row" style={{marginCenter: "auto"}}>
-        <div className="divBox" style={{marginLeft: 10, marginBottom: 10, left: "10%", minWidth: "40%", height:10}}>
-          <form action="/" method="get">
+        <div className="divBox" style={{marginLeft: 20, marginBottom: 10, left: "10%", minWidth: "40%", height:20}}>
+          <form action="/" method="get" style={{minWidth: "70%", fontSize: "18px"}}>
             <input
               type="text"
               id="header-search"
               placeholder="Search Vehicle"
               name="s" 
             />
-            <button type="submit"> Search</button>
+            <Button type="submit" variant="contained" color="secondary">Search</Button>
           </form>
         </div>
         
         <div className="divBox" style={{marginLeft: "auto"}}>
-          <Button variant="contained" color="secondary" >
-            Add Vehicle
-          </Button>
+          <Popup
+            trigger={
+            <Button variant="contained" color="secondary">
+              Add Vehicle
+            </Button>}
+            modal
+            nested
+          >
+            {close => (
+              <div className="modal">
+                <button className="close" onClick={close}>
+                  &times;
+                </button>
+                <div className="header"> NEW VEHICLE </div>
+                <div className="content">
+                  {' '}
+                  <div className="row">
+                    <form>
+                      <label>
+                        Brand &nbsp;
+                        <input type="text" name="brand" style={{padding: "5px"}}/>
+                      </label>
+                    </form>
+                    <form>
+                      <label>
+                        Model &nbsp;
+                        <input type="text" name="model" style={{padding: "5px"}}/>
+                      </label>
+                    </form>
+                    <form>
+                      <label>
+                        Manufactor Year &nbsp;
+                        <input type="text" name="year" style={{padding: "5px"}}/>
+                      </label>
+                    </form>
+                    <form>
+                      <label>
+                        Auto Transmission &nbsp;
+                        <input type="text" name="brand" style={{padding: "5px"}}/>
+                      </label>
+                    </form>
+                    <form>
+                      <label>
+                        Average Emissions &nbsp;
+                        <input type="text" name="avgemisions" style={{padding: "5px"}}/>
+                      </label>
+                    </form>
+                    <form>
+                      <label>
+                        Registration &nbsp;
+                        <input type="text" name="rego" style={{padding: "5px"}}/>
+                      </label>
+                    </form>
+                  </div>
+                </div>
+                
+                <div className="actions">
+                  <Button variant="contained" color="secondary"> Confirm </Button>
+                  <Button
+                    variant="contained" 
+                    color="secondary"
+                    onClick={() => {
+                      close();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Popup>
         </div>
       </div>
 

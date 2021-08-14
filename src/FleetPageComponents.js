@@ -3,7 +3,6 @@ import React from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {Build, Eco, LocalShipping, HowToReg} from '@material-ui/icons';
 import {Button, Card, Chip, Typography, CardContent, CardActions, Divider, Tooltip, Dialog, DialogTitle, DialogActions} from "@material-ui/core";
-//import Popup from 'reactjs-popup';
 import { database } from './App';
 import 'reactjs-popup/dist/index.css';
 
