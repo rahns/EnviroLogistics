@@ -71,3 +71,11 @@
 .innerAccordian {
   display: block !important;
 }
+
+.infoCard {
+  margin: #614385;
+  border: 5px outset #614385;
+  background-color: lightblue;
+  text-align: left;
+  display: inline-block;
+}

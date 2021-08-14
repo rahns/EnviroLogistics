@@ -1,4 +1,4 @@
-class Vehicle {
+export class Vehicle {
     constructor(brand, make, year, autoTransmission, avgEmissionsPerKm, rego) {
       this.brand = brand;
       this.make = make;
@@ -10,6 +10,16 @@ class Vehicle {
 
     toString(){
       return this.rego + " - " + this.brand + " " + this.make + " " + this.year;
+    }
+
+    objectToInstance(obj, dbKey) {
+      this.dbKey = dbKey;
+      this.brand = obj.brand;
+      this.make = obj.make;
+      this.year = obj.year;
+      this.autoTransmission = obj.autoTransmission;
+      this.avgEmissionsPerKm = obj.avgEmissionsPerKm;
+      this.rego = obj.rego;
     }
   };
   

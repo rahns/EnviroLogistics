@@ -57,7 +57,7 @@ export default function Main(props) {
             pageUpdater(<Analyse pageUpdater={pageUpdater} addToDatabase={addToDatabase}/>);
             break;
           case 2:
-            pageUpdater(<Fleet pageUpdater={pageUpdater}/>);
+            pageUpdater(<Fleet pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user}/>);
             break;
           case 3:
             handleClickLogout();
