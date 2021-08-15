@@ -3,7 +3,7 @@ import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
 import {Button, MenuItem, TextField, Typography } from "@material-ui/core";
-import TripAccordian from './TripPageComponents';
+import TripAccordian from './components/TripAccordian';
 import { getExampleTrips, Trip } from './Classes';
 
 

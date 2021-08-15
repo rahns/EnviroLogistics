@@ -1,10 +1,10 @@
-import './App.css';
+import '../App.css';
 import React from 'react';
 import {ExpandMore, Event, Timer, AvTimer, Straighten, LocalShipping, Eco, Room} from '@material-ui/icons';
 import {Button, Accordion, AccordionActions, AccordionDetails, AccordionSummary, Divider, 
   Typography, Chip, Tooltip, Dialog, DialogTitle, DialogActions} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import { database } from './App';
+import { database } from '../App';
 
 const useStyles = makeStyles(() => ({
   Accordion: {
