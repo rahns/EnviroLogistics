@@ -10,11 +10,11 @@ export default function Analyse(props) {
     <div>
       <h1 style = {{color: "white",marginLeft: 450  , marginTop: 0}}>This is the Analysis Page</h1>
       <Button variant="contained" color="primary" style = {{marginLeft: 450, marginTop: 100}} 
-      onClick={() => props.pageUpdater(<Report pageUpdater={props.pageUpdater}/>)}>
+      onClick={() => props.pageUpdater(<Report pageUpdater={props.pageUpdater} user = {props.user}/>)}>
         Report
       </Button>
       <Button variant = "contained" color = "secondary" style = {{marginLeft: 50, marginTop:100}}
-      onClick={() => props.pageUpdater(<Graph pageUpdater={props.pageUpdater}/>)}>
+      onClick={() => props.pageUpdater(<Graph pageUpdater={props.pageUpdater} user = {props.user}/>)}>
         Graph Analysis
       </Button>
 

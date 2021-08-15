@@ -54,7 +54,7 @@ export default function Main(props) {
             pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user} />);
             break;
           case 1:
-            pageUpdater(<Analyse pageUpdater={pageUpdater} addToDatabase={addToDatabase}/>);
+            pageUpdater(<Analyse pageUpdater={pageUpdater} addToDatabase={addToDatabase} user = {user}/>);
             break;
           case 2:
             pageUpdater(<Fleet pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user}/>);
