@@ -27,7 +27,6 @@ export default function Graph(props) {
 
     data.push({name: a[allTripsList[i].date.getMonth()] + " " +allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
   }
-
         return  (<div className = "divBox">
         
             <LineChart
@@ -55,6 +54,7 @@ export default function Graph(props) {
                 
               />
             </LineChart>
+            
             </div>
           );
     

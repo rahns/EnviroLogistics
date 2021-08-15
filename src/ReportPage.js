@@ -1,8 +1,50 @@
 import './App.css';
 import React from 'react';
 import {Button, Card, Typography, CardContent, CardActions, Divider} from "@material-ui/core";
+import { Trip } from './Classes';
+import { database } from './App';
 
-export default function Report() {
+export default function Report(props) {
+  const [allTripsList, setAllTrips] = React.useState([]);
+  React.useEffect(() =>
+  database.ref("trips/" + props.user.uid).on("value", snapshot => {
+    let allTrips = [];
+    if (snapshot) {
+      snapshot.forEach(snap => {
+        let i = new Trip(); 
+        i.objectToInstance(JSON.parse(snap.val().data), snap.key);
+        allTrips.push(i);
+        }
+      );
+    }
+    setAllTrips(allTrips);
+    const max = 0
+    const min = 0
+    var average = 0
+    for (let i = 0; i < allTripsList.length; i++) {
+      if (allTripsList[i].emission < min) {
+        min = allTripsList[i]
+      }
+      if (allTripsList[i].emission > max){
+        max = allTripsList[i]
+      }
+      average += allTripsList[i]
+    }
+    average /= allTripsList.length
+  }), [])
+  // const max = 0
+  // const min = 0
+  // const average = 0
+  // for (let i = 0; i < allTripsList.length; i++) {
+  //   if (allTripsList[i].emission < min) {
+  //     min = allTripsList[i]
+  //   }
+  //   if (allTripsList[i].emission > max){
+  //     max = allTripsList[i]
+  //   }
+  //   average += allTripsList[i]
+  // }
+  // average = average/allTripsList.length
     return (
       <div stlye={{}}>
         <h1 style = {{marginLeft: 500, color: "white"}}>Your Yearly Report</h1>
@@ -25,7 +67,7 @@ export default function Report() {
             </Typography>
 
             <Typography variant="h4" component="h2">
-              Median: 30
+              Average: average
             </Typography>
 
             <Typography
@@ -37,7 +79,7 @@ export default function Report() {
               Good job keeping your gas emission median this low, to improve you could try .....
             </Typography>
             <Typography variant="h4" component="h2">
-              Min: 10
+              Min: min
             </Typography>
             <Typography
               style={{
@@ -48,7 +90,7 @@ export default function Report() {
               Great work achieving this minimum! 
             </Typography>
             <Typography variant="h4" component="h2">
-              Max: 50
+              Max: max
             </Typography>
             <Typography
               style={{
