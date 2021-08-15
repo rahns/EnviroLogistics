@@ -35,20 +35,19 @@ const data = [
 ];
 
 export default function Graph(props) {
-        return  (<div>
+        return  (<div className = "divBox">
         
             <LineChart
               width={1000}
               height={800}
               data={data}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5
-
-              }}
-              style = {{marginLeft: 450  , marginTop: 100}} 
+              // margin={{
+              //   top: 5,
+              //   right: 30,
+              //   left: 20,
+              //   bottom: 5
+              // }}
+              //style = {{marginLeft: 450  , marginTop: 100}} 
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
