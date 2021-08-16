@@ -1,7 +1,7 @@
 export class Vehicle {
-    constructor(brand, make, year, autoTransmission, avgEmissionsPerKm, rego) {
-      this.brand = brand;
+    constructor(make, model, year, autoTransmission, avgEmissionsPerKm, rego) {
       this.make = make;
+      this.model = model;
       this.year = year;
       this.autoTransmission = autoTransmission;
       this.avgEmissionsPerKm = avgEmissionsPerKm;
@@ -9,13 +9,13 @@ export class Vehicle {
     }
 
     toString(){
-      return this.rego + " - " + this.brand + " " + this.make + " " + this.year;
+      return this.rego + " - " + this.make + " " + this.model + " " + this.year;
     }
 
     objectToInstance(obj, dbKey) {
       this.dbKey = dbKey;
-      this.brand = obj.brand;
       this.make = obj.make;
+      this.model = obj.model;
       this.year = obj.year;
       this.autoTransmission = obj.autoTransmission;
       this.avgEmissionsPerKm = obj.avgEmissionsPerKm;
@@ -82,10 +82,10 @@ export class Vehicle {
         this.emissions = obj.emissions;
         this.totalDuration = obj.totalDuration;
         this.vehicleTrips = obj.vehicleTrips.map((e) => new VehicleTrip(
-          new Vehicle(e.vehicle.brand, e.vehicle.make, e.vehicle.year, e.vehicle.autoTransmission, e.vehicle.avgEmissionsPerKm, e.vehicle.rego), 
+          new Vehicle(e.vehicle.make, e.vehicle.model, e.vehicle.year, e.vehicle.autoTransmission, e.vehicle.avgEmissionsPerKm, e.vehicle.rego), 
           e.tripLegs.map((t) => new TripLeg(new Location(t.startLocation.lat, t.startLocation.long, t.startLocation.nickname),
           new Location(t.endLocation.lat, t.endLocation.long, t.endLocation.nickname),t.duration, t.distance, 
-          new Vehicle(t.vehicle.brand, t.vehicle.make, t.vehicle.year, t.vehicle.autoTransmission, t.vehicle.avgEmissionsPerKm, t.vehicle.rego)))))
+          new Vehicle(t.vehicle.make, t.vehicle.model, t.vehicle.year, t.vehicle.autoTransmission, t.vehicle.avgEmissionsPerKm, t.vehicle.rego)))))
         
       }
   };  

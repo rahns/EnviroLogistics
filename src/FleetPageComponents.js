@@ -17,8 +17,8 @@ const useStyles = makeStyles(() => ({
 
 export default function VehicleCard(props) {
     const vehicle = props.vehicle;
-    const brand = props.vehicle.brand;
     const make = props.vehicle.make;
+    const model = props.vehicle.model;
     const year = props.vehicle.year;
     const avgEmissions = props.vehicle.avgEmissionsPerKm;
     const rego = props.vehicle.rego;
@@ -38,7 +38,6 @@ export default function VehicleCard(props) {
         setDialogState(false);
     };
     const handleDelete = () => {
-        console.log(vehicle);
         database.ref('vehicles/' + props.user.uid + '/' + vehicle.dbKey).remove(); 
         handleDialogClose();
     }
@@ -49,7 +48,7 @@ export default function VehicleCard(props) {
                 <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 5}}>
                 <Chip variant="outlined" color='primary' icon={<LocalShipping />}
                     label ={<Typography variant="h4" style={{margin: "auto"}}>
-                        {brand + " " + make}
+                        {make + " " + model}
                     </Typography>}
                     />
                 </div>
