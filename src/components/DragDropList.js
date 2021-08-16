@@ -2,7 +2,7 @@
 // Assumes each list element has a toString method defined
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import React, { useState } from "react";
+import React from "react";
 
 const grid = 8;
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -46,7 +46,7 @@ const DraggableList = React.memo(function DraggableList({ elements }) {
 });
 
 export default function DragDropList({ initialList }) {
-    const [state, setState] = useState({ list: initialList });
+    const [state, setState] = React.useState({ list: initialList });
 
     function onDragEnd(result) {
         if (!result.destination) {
