@@ -4,8 +4,8 @@ import React from 'react';
 import AddTrip from './AddTrip';
 import {Button, MenuItem, TextField, Typography } from "@material-ui/core";
 import TripAccordian from './components/TripAccordian';
-import { getExampleTrips, Trip } from './Classes';
-
+import { getExampleCars, getExampleLocations, getExampleLocationsNoDepot, getExampleTrips, Trip } from './Classes';
+import { optimise } from './Optimise';
 
 function filterTrips(filter, allTripsList, currentTripsList) {
   if (filter[0] !== 0){
@@ -21,6 +21,13 @@ function filterTrips(filter, allTripsList, currentTripsList) {
 
 
 export default function Trips(props) {
+  // Testing:
+  React.useEffect(() => 
+    optimise(getExampleCars(), getExampleLocationsNoDepot(), getExampleLocations()[0])
+    );
+  // Remove Above
+
+
   const [filter, setFilter] = React.useState([0, true]);
   const [currentTripsList, setTrips] = React.useState([]);
   const [allTripsList, setAllTrips] = React.useState([]);

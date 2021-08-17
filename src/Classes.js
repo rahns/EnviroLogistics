@@ -134,3 +134,7 @@ export function getExampleCars() {
 export function getExampleLocations() {
   return [exampleLocation1, exampleLocation2, exampleLocation3];
 }
+
+export function getExampleLocationsNoDepot() {
+  return [exampleLocation2, exampleLocation3];
+}
