@@ -14,13 +14,11 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>EnviroLogistics</title>
     <script type="module">
-      import init, { solve_pragmatic } from './pkg/vrp_cli.js';
+      import init, { solve_pragmatic } from './vrp-solver/vrp_cli.js';
       window.init = init;
       window.solve_pragmatic = solve_pragmatic;
     </script>
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
-    <script> mapboxgl.accessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';</script>
+    
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

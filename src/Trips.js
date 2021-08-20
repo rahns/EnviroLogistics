@@ -4,7 +4,7 @@ import React from 'react';
 import AddTrip from './AddTrip';
 import {Button, MenuItem, TextField, Typography } from "@material-ui/core";
 import TripAccordian from './components/TripAccordian';
-import { getExampleCars, getExampleLocations, getExampleLocationsNoDepot, getExampleTrips, Trip } from './Classes';
+import { getExampleCars, getExampleLocations, getExampleLocationsNoDepot, getExampleOptimisedTrip, getExampleTrips, Trip } from './Classes';
 import { optimise } from './Optimise';
 
 function filterTrips(filter, allTripsList, currentTripsList) {
@@ -22,8 +22,8 @@ function filterTrips(filter, allTripsList, currentTripsList) {
 
 export default function Trips(props) {
   // Testing:
-  React.useEffect(() => 
-    optimise(getExampleCars(), getExampleLocationsNoDepot(), getExampleLocations()[0])
+  const runOptimise = (() =>
+    optimise(new Date(), getExampleCars(), getExampleLocationsNoDepot(), getExampleLocations()[0]).then(console.log)
     );
   // Remove Above
 
@@ -59,7 +59,10 @@ export default function Trips(props) {
   const addTestTrips = () => {
     for (let i = 0; i < testTrips.length; i++){
       props.addToDatabase('trips/', JSON.stringify(testTrips[i]));
+      console.log(testTrips[i])
     }
+    // Test the trip optimiser
+    getExampleOptimisedTrip().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) });
   }
   
 
@@ -110,9 +113,16 @@ export default function Trips(props) {
       </div>
     </div>
 
+    <div className='row'><div className="divBox"><Typography variant='subtitle1'><b>Buttons for Testing:</b></Typography></div></div>
     <div className="row">
       <div className="divBox">
         <Button onClick={() => addTestTrips()}>Add Some Test Trips</Button>
+      </div>
+      <div className="divBox">
+        <Button onClick={() => runOptimise()}>Test Optimise Function</Button>
+      </div>
+      <div className="divBox">
+        <Button onClick={() => database.ref('trips/' + props.user.uid + '/').remove() }>Delete All Trips</Button>
       </div>
     </div>
   </>

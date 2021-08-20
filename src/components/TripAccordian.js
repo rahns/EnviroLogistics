@@ -6,13 +6,15 @@ import {Button, Accordion, AccordionActions, AccordionDetails, AccordionSummary,
 import {makeStyles} from "@material-ui/core/styles";
 import { database } from '../App';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   Accordion: {
     "&.MuiAccordion-root:before": {
       backgroundColor: "rgba(255, 255, 255, 0)"
     },
     maxWidth: "100%"
-  }
+  },
+  wrapChipRoot: { height: '100%', display: 'flex', flexDirection: 'column' }, 
+  wrapChipLabel: { marginBottom: 5, marginTop: 5, overflowWrap: 'break-word', whiteSpace: 'normal', textOverflow: 'clip' }
 }));
 
 export default function TripAccordian(props) {
@@ -34,12 +36,14 @@ export default function TripAccordian(props) {
     database.ref('trips/' + props.user.uid + '/' + trip.dbKey).remove(); 
     handleDialogClose();
   }
+  const classes = useStyles();
 
   return (
-    <Accordion className="roundedCorners" classes={{root: useStyles().Accordion}} expanded={props.expanded === props.id} onChange={props.changeHandler(props.id)}>
+    <Accordion className="roundedCorners" classes={{root: classes.Accordion}} expanded={props.expanded === props.id} onChange={props.changeHandler(props.id)}>
       <AccordionSummary expandIcon={<ExpandMore />} style={{marginLeft: 3}}>
         <div style={{display: "flex", flexDirection: "column"}}>
           <div className="row"><Chip variant="outlined" color='primary' icon={<Event />} label={<Typography variant="h6">{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear()}</Typography>} /></div>
+          {trip.notes ? <div className="row"><Chip classes={{ root: classes.wrapChipRoot, label: classes.wrapChipLabel, }} variant="outlined" color='primary' label={<Typography variant="body2"><b>Notes:</b> {trip.notes}</Typography>} /></div> : null}
           <div className="row">
             <Tooltip title="Consecutive Duration"><Chip icon={<Timer />} label={"Duration: " + trip.consecutiveDuration + " minutes"}/></Tooltip>
             <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Summed times: " + trip.totalDuration + " minutes"} /></Tooltip>
@@ -73,6 +77,7 @@ export default function TripAccordian(props) {
 }
 
 function VehicleAccordian(props) {
+  const classes = useStyles();
   const vehicleTrip = props.vehicleTrip;
   const vehicle = vehicleTrip.vehicle;
   const legs = []
@@ -80,7 +85,7 @@ function VehicleAccordian(props) {
     legs.push(<DisplayLeg leg={vehicleTrip.tripLegs[i]} />)
   };
   return (
-    <Accordion className={`roundedCorners fillWidth`} classes={{root: useStyles().Accordion}}>
+    <Accordion className={`roundedCorners fillWidth`} classes={{root: classes.Accordion}}>
       <AccordionSummary expandIcon={<ExpandMore />} style={{minHeight: "1px !important"}}>
         <div className="row">
           <Tooltip title="Vehicle Used"><Chip variant="outlined" icon={<LocalShipping />} label={vehicle.toString()}/></Tooltip>

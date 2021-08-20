@@ -47,7 +47,7 @@ export default function VehicleCard(props) {
             <CardContent>
                 <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 5}}>
                 <Chip variant="outlined" color='primary' icon={<LocalShipping />}
-                    label ={<Typography variant="h4" style={{margin: "auto"}}>
+                    label ={<Typography variant="h5" style={{margin: "auto"}}>
                         {make + " " + model}
                     </Typography>}
                     />
@@ -61,7 +61,7 @@ export default function VehicleCard(props) {
             </CardContent>
             <Divider />
             <CardActions>
-                <Button size="small" color="secondary" style={{left: "88%"}} onClick={() => handleClickDeleteButton()}>Remove Vehicle</Button>
+                <Button size="small" color="secondary" style={{marginLeft: "auto"}} onClick={() => handleClickDeleteButton()}>Remove Vehicle</Button>
             </CardActions>
             <Dialog open={dialogState} onClose={handleDialogClose}>
                 <DialogTitle >Are you sure you want to delete this vehicle?</DialogTitle>

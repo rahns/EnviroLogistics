@@ -1,3 +1,5 @@
+import { getDirections, optimise } from "./Optimise";
+
 export class Vehicle {
   constructor(make, model, year, autoTransmission, avgEmissionsPerKm, rego) {
     this.make = make;
@@ -35,18 +37,19 @@ export class Location {
   }
 }
 
-class TripLeg {
-  constructor(startLocation, endLocation, duration, distance, vehicle) {
+export class TripLeg {
+  constructor(startLocation, endLocation, duration, distance, vehicle, directions) {
     this.startLocation = startLocation;
     this.endLocation = endLocation;
     this.duration = duration;
     this.distance = distance;
     this.vehicle = vehicle;
+    this.directions = directions;
     this.legEmissions = vehicle.avgEmissionsPerKm * distance;
   }
 };
 
-class VehicleTrip {
+export class VehicleTrip {
   constructor(vehicle, tripLegs) {
     this.vehicle = vehicle;
     this.tripLegs = tripLegs;
@@ -59,8 +62,9 @@ class VehicleTrip {
 }
 
 export class Trip {
-  constructor(date, vehicleTrips) {
+  constructor(date, vehicleTrips, notes) {
     this.date = date;
+    this.notes = notes;
     this.vehicleTrips = vehicleTrips;
     if (vehicleTrips !== undefined) {
       [this.distance, this.totalDuration, this.emissions, this.consecutiveDuration] = vehicleTrips.reduce(
@@ -77,6 +81,7 @@ export class Trip {
   }
   objectToInstance(obj, dbKey) {
     this.dbKey = dbKey;
+    this.notes = obj.notes;
     this.consecutiveDuration = obj.consecutiveDuration;
     this.date = new Date(Date.parse(obj.date));
     this.distance = obj.distance;
@@ -86,7 +91,7 @@ export class Trip {
       new Vehicle(e.vehicle.make, e.vehicle.model, e.vehicle.year, e.vehicle.autoTransmission, e.vehicle.avgEmissionsPerKm, e.vehicle.rego),
       e.tripLegs.map((t) => new TripLeg(new Location(t.startLocation.lat, t.startLocation.long, t.startLocation.nickname),
         new Location(t.endLocation.lat, t.endLocation.long, t.endLocation.nickname), t.duration, t.distance,
-        new Vehicle(t.vehicle.make, t.vehicle.model, t.vehicle.year, t.vehicle.autoTransmission, t.vehicle.avgEmissionsPerKm, t.vehicle.rego)))))
+        new Vehicle(t.vehicle.make, t.vehicle.model, t.vehicle.year, t.vehicle.autoTransmission, t.vehicle.avgEmissionsPerKm, t.vehicle.rego), t.directions))))
 
   }
 };
@@ -137,4 +142,8 @@ export function getExampleLocations() {
 
 export function getExampleLocationsNoDepot() {
   return [exampleLocation2, exampleLocation3];
+}
+
+export function getExampleOptimisedTrip() {
+  return optimise(new Date('8/20/2021'), [exampleCar, exampleCar2], [exampleLocation2, exampleLocation3], exampleLocation1, "Example optimised trip; 2 vehicles available, 2 delivery jobs");
 }

@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import {Button, TextField, InputAdornment, MenuItem} from "@material-ui/core";
+import {Button, TextField, InputAdornment, MenuItem, Typography} from "@material-ui/core";
 import { getExampleCars , Vehicle} from './Classes';
 import VehicleCard from './FleetPageComponents';
 import { database } from './App';
@@ -53,7 +53,7 @@ export default function Fleet(props) {
     vehicleComponents.push(<div style={{margin: 4}}></div>);
   };
   if (vehicleComponents.length === 0){
-    vehicleComponents = "No Vehicles to Show";
+    vehicleComponents = <Typography variant="h6">No Vehicles to Show</Typography>;
   }
 
   React.useEffect(() =>
@@ -90,7 +90,7 @@ export default function Fleet(props) {
   return (
     <>
       <div className="row" style={{marginCenter: "auto"}}>
-        <div className="divBox" style={{marginLeft: 20, marginBottom: 10, left: "10%", minWidth: "40%", height:22}}>
+        <div className="divBox" style={{minWidth: "40%", height:36}}>
           <TextField id="searchField" label="Search Vehicle" action="/" type="search" method="get" style={{minWidth: "70%", fontSize: "16px", marginBottom: 10}}></TextField>
           <Button type="submit" variant="contained" color="secondary" onClick={() => setFilter([document.getElementById("searchField").value, true])}>Search</Button>
         </div>
@@ -150,7 +150,7 @@ export default function Fleet(props) {
       </div>
 
       <div className="row" style={{width:"100%"}}>
-        <div className={`divBox vehicleList`} style={{width:"90%", margin:"auto"}}>
+        <div className={`divBox vehicleList`} style={{width:"100%", margin:"auto"}}>
             {vehicleComponents}
         </div>
       </div>

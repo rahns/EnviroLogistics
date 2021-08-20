@@ -1,7 +1,8 @@
-export async function optimise(vehicleList, locationList, depotLocation) {
-    // Get distance matrix:
-    let locationToArrayMapping, distanceMatrix = getDistanceMatrix(locationList, depotLocation);
+import { Trip, VehicleTrip, TripLeg } from "./Classes";
 
+export async function optimise(tripDate, vehicleList, locationList, depotLocation, notes) {
+    // Get distance matrix:
+    let matrix_data = getMatrices(locationList, depotLocation);
     
     // Construct problem for passing to solver:
     let planObj = {jobs: [{id: "job", deliveries: generateDeliveriesList(locationList.length)}]};
@@ -23,32 +24,51 @@ export async function optimise(vehicleList, locationList, depotLocation) {
                 {
                     "type": "minimize-cost"
                 }
+            ],
+            [
+                {
+                    "type": "minimize-duration"
+                }
             ]
         ]
     };
 
     // Initialise and call solver:
     await window.init();
-    await distanceMatrix.then(matrix => console.log(matrix[1]));
-    await distanceMatrix.then(matrix => console.log(window.solve_pragmatic(problemObj, matrix[1], {})));
+    let result;
+    await matrix_data.then(async data => result = await responseToTrip(
+            tripDate, 
+            window.solve_pragmatic(problemObj, data[1], {}), 
+            data[0], notes)
+    );
+    return result;
 }
 
-async function getDistanceMatrix(locationList, depotLocation) {
-    const base_url = "http://router.project-osrm.org/table/v1/driving/";
-    const coordinateString = locationList.reduce(((acc, e) => acc + ";" + e.long + "," + e.lat), depotLocation.long + "," + depotLocation.lat);
-    const request_url = base_url + coordinateString + "?annotations=distance";
-    let response = await fetch(request_url);
+async function getMatrices(locationList, depotLocation) {
+    const base_url = "https://api.openrouteservice.org/v2/matrix/driving-car";
+    let locations = [[depotLocation.long, depotLocation.lat]];
+    locationList.forEach(e => locations.push([e.long, e.lat]));
+    const bodyData = {"locations":locations,"metrics":["distance","duration"],"units":"m"};
+    const response = await fetch(base_url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+          'Content-Type': 'application/json',
+          'Authorization': '5b3ce3597851110001cf6248790397fb19954defb28bd62f87995b3f'
+        },
+        body: JSON.stringify(bodyData)
+      });
     let data = await response.json();
-    let matrix = await data.distances.map((e) => (e.map((l) => Math.round(l))));
-    // Flip matrix column and rows to be in same format as the solver requires, then flatten from 2D to 1D
-    let refactoredMatrix = await matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex])).flat();
-    return [[depotLocation].concat(locationList), ([
-        {
+    let distanceMatrix = await data.distances.map((e) => (e.map((l) => Math.round(l)))).flat();
+    let durationMatrix = await data.durations.map((e) => (e.map((l) => Math.round(l/60)))).flat();
+    return [
+        [depotLocation].concat(locationList), 
+        ([{
             "matrix": "normal",
-            "distances": refactoredMatrix,
-            "travelTimes": new Array(refactoredMatrix.length).fill(0)  // times are required for solver but not used
-        }]
-    )]
+            "distances": distanceMatrix,
+            "travelTimes": durationMatrix  // times are required for solver but not used
+        }])
+    ]
 }
 
 function generateDeliveriesList(numberOfDeliveries) {
@@ -94,7 +114,48 @@ function generateVehiclesList(vehicleList) {
                     }
                 }
             }],
-            capacity: [1]
+            capacity: [1],
+            limits: {}
         }
     ))
+}
+
+async function responseToTrip(date, response, locationIndexMapping, notes) {
+
+    response = JSON.parse(response);
+    let vehicleTrips = Promise.all(response.tours.map(async tour => await tourToVehicleTrip(tour, locationIndexMapping)));
+
+    return new Trip(date, await vehicleTrips, notes);
+}
+
+async function tourToVehicleTrip(tour, locationIndexMapping) {
+    let vehicle = JSON.parse(tour.vehicleId);
+
+    let tripLegs = [];
+    let stops = tour.stops;
+
+    for (let i = 1; i < stops.length; i++) {
+        let startLocation = locationIndexMapping[stops[i-1].location.index];
+        let endLocation = locationIndexMapping[stops[i].location.index];
+        let directions = await getDirections(startLocation, endLocation)
+        let leg = new TripLeg(
+                startLocation,
+                endLocation,
+                Math.round(directions.features[0].properties.summary.duration / 60),
+                Math.round(directions.features[0].properties.summary.distance / 1000),
+                vehicle,
+                directions.features[0]
+        )
+        tripLegs.push(leg);
+    }
+
+    return new VehicleTrip(vehicle, tripLegs);
+}
+
+export async function getDirections(start, end) {
+    let base_url = "https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248790397fb19954defb28bd62f87995b3f&";
+    let request_url = base_url + "start=" + start.long + "," + start.lat + "&end=" + end.long + "," + end.lat
+    const response = await fetch(request_url)
+
+    return response.json()
 }
