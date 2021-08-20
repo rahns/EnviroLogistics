@@ -27,7 +27,10 @@ export default function Graph(props) {
 
     data.push({name: a[allTripsList[i].date.getMonth()] + " " +allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
   }
-        return  (<div className = "divBox">
+        return  (
+        <div className = "divBox">
+          <h3>Analysis Graph</h3>
+          <h4 style = {{marginLeft: 100}}>x = month, y = co2 emissions</h4>
         
             <LineChart
               width={1200}
