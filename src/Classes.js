@@ -111,16 +111,6 @@ const exampleTripPast = new Trip(new Date('8/2/2021'), [
     new TripLeg(exampleLocation3, exampleLocation1, 56, 72, exampleCar2)
   ])
 ]);
-const exampleTripCurrent = new Trip(new Date('8/3/2021'), [
-  new VehicleTrip(exampleCar, [
-    new TripLeg(exampleLocation1, exampleLocation2, 56, 72, exampleCar),
-    new TripLeg(exampleLocation2, exampleLocation3, 56, 72, exampleCar)
-  ]),
-  new VehicleTrip(exampleCar2, [
-    new TripLeg(exampleLocation3, exampleLocation2, 56, 72, exampleCar2),
-    new TripLeg(exampleLocation2, exampleLocation1, 56, 72, exampleCar2)
-  ])
-]);
 const exampleTripFuture = new Trip(new Date('8/3/2029'), [
   new VehicleTrip(exampleCar, [
     new TripLeg(exampleLocation3, exampleLocation2, 56, 72, exampleCar),
@@ -129,7 +119,7 @@ const exampleTripFuture = new Trip(new Date('8/3/2029'), [
 ]);
 
 export function getExampleTrips() {
-  return [exampleTripPast, exampleTripCurrent, exampleTripFuture];
+  return [exampleTripPast, exampleTripFuture];
 }
 
 export function getExampleCars() {

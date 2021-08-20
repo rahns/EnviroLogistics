@@ -14,6 +14,12 @@
   flex-direction: column;
 }
 
+.progressBar{
+  background: linear-gradient(to right, #49a09d, #5f2c82);
+  border-radius: 13px;
+  height: 8px !important;
+}
+
 .bottomBar{
 	position:fixed;
   height: 56px;

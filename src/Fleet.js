@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import {Button, TextField, InputAdornment, MenuItem, Typography} from "@material-ui/core";
+import {Button, TextField, InputAdornment, MenuItem, Typography, LinearProgress} from "@material-ui/core";
 import { getExampleCars , Vehicle} from './Classes';
 import VehicleCard from './FleetPageComponents';
 import { database } from './App';
@@ -23,6 +23,7 @@ export default function Fleet(props) {
   const [filter, setFilter] = React.useState(["", true]);
   const [filteredVehicles, setVehicles] = React.useState([]);
   const [allVehicles, setAllVehicles] = React.useState([]);
+  const [stillLoading, setStillLoading] = React.useState(true);
 
   const [transmission, setTransmission] = React.useState('');
   const handleTransmissionSelect = (event) => {
@@ -46,16 +47,6 @@ export default function Fleet(props) {
     props.addToDatabase('vehicles/', JSON.stringify(newVehicle));
   }
 
-
-  let vehicleComponents = [];
-  for (let i = 0; i < filteredVehicles.length; i++) {
-    vehicleComponents.push(<VehicleCard vehicle={filteredVehicles[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
-    vehicleComponents.push(<div style={{margin: 4}}></div>);
-  };
-  if (vehicleComponents.length === 0){
-    vehicleComponents = <Typography variant="h6">No Vehicles to Show</Typography>;
-  }
-
   React.useEffect(() =>
   database.ref("vehicles/" + props.user.uid).on("value", snapshot => {
     let allVehicles = [];
@@ -71,8 +62,23 @@ export default function Fleet(props) {
     setVehicles(filterVehicles(filter, allVehicles, filteredVehicles));
     setFilter([filter[0], false]);
     setExpanded(false);
+    setStillLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [])
+
+  let vehicleComponents = [];
+  if (stillLoading) {
+    vehicleComponents = <LinearProgress className='progressBar'/>
+  }
+  else {
+    for (let i = 0; i < filteredVehicles.length; i++) {
+      vehicleComponents.push(<VehicleCard vehicle={filteredVehicles[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
+      vehicleComponents.push(<div style={{margin: 4}}></div>);
+    };
+    if (vehicleComponents.length === 0){
+      vehicleComponents = <Typography variant="h6">No Vehicles to Show</Typography>;
+    }
+  }
 
   const dummyVehicles = getExampleCars();
   const addTestVehicles = () => {

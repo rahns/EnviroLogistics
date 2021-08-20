@@ -2,7 +2,7 @@ import './App.css';
 import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, MenuItem, TextField, Typography } from "@material-ui/core";
+import {Button, MenuItem, TextField, Typography, LinearProgress } from "@material-ui/core";
 import TripAccordian from './components/TripAccordian';
 import { getExampleCars, getExampleLocations, getExampleLocationsNoDepot, getExampleOptimisedTrip, getExampleTrips, Trip } from './Classes';
 import { optimise } from './Optimise';
@@ -31,6 +31,7 @@ export default function Trips(props) {
   const [filter, setFilter] = React.useState([0, true]);
   const [currentTripsList, setTrips] = React.useState([]);
   const [allTripsList, setAllTrips] = React.useState([]);
+  const [stillLoading, setStillLoading] = React.useState(true);
 
   const [expanded, setExpanded] = React.useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
@@ -52,6 +53,7 @@ export default function Trips(props) {
     setTrips(filterTrips(filter, allTrips, currentTripsList));
     setFilter([filter[0], false]);
     setExpanded(false);
+    setStillLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [])
 
@@ -74,14 +76,19 @@ export default function Trips(props) {
   }
  
   let tripComponents = [];
-  for (let i = 0; i < currentTripsList.length; i++) {
-    tripComponents.push(<TripAccordian trip={currentTripsList[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
-    tripComponents.push(<div style={{margin: 4}}></div>);
-  };
-  if (tripComponents.length === 0){
-    tripComponents = <Typography variant="h6">No Trips to Show</Typography>;
+  if (stillLoading) {
+    tripComponents = <LinearProgress className='progressBar'/>
   }
-
+  else {
+    for (let i = 0; i < currentTripsList.length; i++) {
+      tripComponents.push(<TripAccordian trip={currentTripsList[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
+      tripComponents.push(<div style={{margin: 4}}></div>);
+    };
+    if (tripComponents.length === 0){
+      tripComponents = <Typography variant="h6">No Trips to Show</Typography>;
+    }
+  }
+  
   return (
     <>
     <div className="row">
