@@ -10,7 +10,6 @@ import Fleet from './Fleet';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 
-// const mapboxAccessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
 
 export default function Main(props) {
   const [navState, setValue] = React.useState(0);  // Set default state to 0
