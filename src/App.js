@@ -6,7 +6,7 @@ import "firebase/auth";
 import "firebase/database";
 import { FirebaseAuthProvider, IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import {Typography, Snackbar } from "@material-ui/core";
+import {Typography, Snackbar, Grow } from "@material-ui/core";
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 
@@ -71,16 +71,20 @@ export default function App(props) {
         <FirebaseAuthProvider {...firebaseConfig} firebase={firebase}>
             <ThemeProvider theme={theme}>
                 <IfFirebaseAuthed>
-                        <Main firebase={firebase} />
+                  <Main firebase={firebase} />
                 </IfFirebaseAuthed>
                 <IfFirebaseUnAuthed>
-                    <div className={`App-content`} style={{justifyContent: "center", alignItems: "center"}}>
+                  <div className={`App-content`} style={{justifyContent: "center", alignItems: "center"}}>
+                    <Grow in={true} timeout={1000} style={{ transitionDelay: 100}}>
+                      <div>
                         <div className="divBox">
-                        <Typography variant="h6" style={{textAlign: "center"}}>Welcome to EnviroLogistics</Typography>
-                        <Typography style={{textAlign: "center"}}>Please sign-in:</Typography>
-                        <StyledFirebaseAuth uiConfig={loginUIConfig} firebaseAuth={firebase.auth()} />
+                          <Typography variant="h6" style={{textAlign: "center"}}>Welcome to EnviroLogistics</Typography>
+                          <Typography style={{textAlign: "center"}}>Please sign-in:</Typography>
+                          <StyledFirebaseAuth uiConfig={loginUIConfig} firebaseAuth={firebase.auth()} />
                         </div>
-                    </div>
+                      </div>
+                    </Grow>
+                  </div>
                 </IfFirebaseUnAuthed>
                 <Snackbar open={msgState} autoHideDuration={6000} onClose={handleMsgClose}>
                     <MuiAlert elevation={6} variant="filled" onClose={handleMsgClose} severity="success">

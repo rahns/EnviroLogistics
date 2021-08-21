@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import {Button, TextField, InputAdornment, MenuItem, Typography, LinearProgress} from "@material-ui/core";
+import {Button, TextField, InputAdornment, MenuItem, Typography, LinearProgress, Grow} from "@material-ui/core";
 import { getExampleCars , Vehicle} from './Classes';
 import VehicleCard from './FleetPageComponents';
 import { database } from './App';
@@ -24,6 +24,7 @@ export default function Fleet(props) {
   const [filteredVehicles, setVehicles] = React.useState([]);
   const [allVehicles, setAllVehicles] = React.useState([]);
   const [stillLoading, setStillLoading] = React.useState(true);
+  const [showFleet, setShowFleet] = React.useState(false);
 
   const [transmission, setTransmission] = React.useState('');
   const handleTransmissionSelect = (event) => {
@@ -72,12 +73,19 @@ export default function Fleet(props) {
   }
   else {
     for (let i = 0; i < filteredVehicles.length; i++) {
-      vehicleComponents.push(<VehicleCard vehicle={filteredVehicles[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
-      vehicleComponents.push(<div style={{margin: 4}}></div>);
+      vehicleComponents.push(
+        <Grow in={showFleet} {...(showFleet ? { timeout: Math.min(200 + (i*500), 5000) } : {})} >
+          <div>
+            <VehicleCard vehicle={filteredVehicles[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>
+            <div style={{margin: 4}}></div>
+          </div>
+        </Grow>
+      );
     };
     if (vehicleComponents.length === 0){
       vehicleComponents = <Typography variant="h6">No Vehicles to Show</Typography>;
     }
+    if (!showFleet) {setShowFleet(true)}
   }
 
   const dummyVehicles = getExampleCars();
@@ -161,11 +169,15 @@ export default function Fleet(props) {
         </div>
       </div>
 
+      <div className='row'><div className="divBox"><Typography variant='subtitle1'><b>Buttons for Testing:</b></Typography></div></div>
       <div className="row">
-      <div className="divBox">
-        <Button onClick={() => addTestVehicles()}>Add Some Test Cars</Button>
+        <div className="divBox">
+          <Button onClick={() => addTestVehicles()}>Add Some Test Cars</Button>
+        </div>
+        <div className="divBox">
+          <Button onClick={() => database.ref('vehicles/' + props.user.uid + '/').remove() }>Delete All Cars</Button>
+        </div>
       </div>
-    </div>
     </>
   );
 }

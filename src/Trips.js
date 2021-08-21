@@ -2,10 +2,9 @@ import './App.css';
 import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, MenuItem, TextField, Typography, LinearProgress } from "@material-ui/core";
+import {Button, MenuItem, TextField, Typography, LinearProgress, Grow} from "@material-ui/core";
 import TripAccordian from './components/TripAccordian';
-import { getExampleCars, getExampleLocations, getExampleLocationsNoDepot, getExampleOptimisedTrip, getExampleTrips, Trip } from './Classes';
-import { optimise } from './Optimise';
+import { getExampleOptimisedTrip, getExampleTrips, Trip } from './Classes';
 
 function filterTrips(filter, allTripsList, currentTripsList) {
   if (filter[0] !== 0){
@@ -21,17 +20,11 @@ function filterTrips(filter, allTripsList, currentTripsList) {
 
 
 export default function Trips(props) {
-  // Testing:
-  const runOptimise = (() =>
-    optimise(new Date(), getExampleCars(), getExampleLocationsNoDepot(), getExampleLocations()[0]).then(console.log)
-    );
-  // Remove Above
-
-
   const [filter, setFilter] = React.useState([0, true]);
   const [currentTripsList, setTrips] = React.useState([]);
   const [allTripsList, setAllTrips] = React.useState([]);
   const [stillLoading, setStillLoading] = React.useState(true);
+  const [showTrips, setShowTrips] = React.useState(false);
 
   const [expanded, setExpanded] = React.useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
@@ -81,12 +74,18 @@ export default function Trips(props) {
   }
   else {
     for (let i = 0; i < currentTripsList.length; i++) {
-      tripComponents.push(<TripAccordian trip={currentTripsList[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>);
-      tripComponents.push(<div style={{margin: 4}}></div>);
+      tripComponents.push(
+        <Grow in={showTrips} {...(showTrips ? { timeout: Math.min(200 + (i*500), 5000) } : {})} >
+          <div>
+            <TripAccordian trip={currentTripsList[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>
+            <div style={{margin: 4}}></div>
+          </div>
+        </Grow>);
     };
     if (tripComponents.length === 0){
       tripComponents = <Typography variant="h6">No Trips to Show</Typography>;
     }
+    if (!showTrips) {setShowTrips(true)}
   }
   
   return (
@@ -124,9 +123,6 @@ export default function Trips(props) {
     <div className="row">
       <div className="divBox">
         <Button onClick={() => addTestTrips()}>Add Some Test Trips</Button>
-      </div>
-      <div className="divBox">
-        <Button onClick={() => runOptimise()}>Test Optimise Function</Button>
       </div>
       <div className="divBox">
         <Button onClick={() => database.ref('trips/' + props.user.uid + '/').remove() }>Delete All Trips</Button>
