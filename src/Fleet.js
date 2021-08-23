@@ -104,12 +104,12 @@ export default function Fleet(props) {
   return (
     <>
       <div className="row" style={{marginCenter: "auto"}}>
-        <div className="divBox" style={{minWidth: "40%", height:36}}>
+        <div className="divBox" style={{minWidth: "40%", height:36, marginRight: "auto"}}>
           <TextField id="searchField" label="Search Vehicle" action="/" type="search" method="get" style={{minWidth: "70%", fontSize: "16px", marginBottom: 10}}></TextField>
           <Button type="submit" variant="contained" color="secondary" onClick={() => setFilter([document.getElementById("searchField").value, true])}>Search</Button>
         </div>
         
-        <div className="divBox" style={{marginLeft: "auto"}}>
+        <div className="divBox">
           <Popup
             trigger={
             <Button variant="contained" color="secondary">

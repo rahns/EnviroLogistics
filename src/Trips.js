@@ -2,13 +2,24 @@ import './App.css';
 import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, MenuItem, TextField, Typography, LinearProgress, Grow} from "@material-ui/core";
+import {Button, MenuItem, TextField, Typography, LinearProgress, Grow, Tooltip} from "@material-ui/core";
 import TripAccordian from './components/TripAccordian';
 import { getExampleOptimisedTrip, getExampleTrips, Trip } from './Classes';
 
-function filterTrips(filter, allTripsList, currentTripsList) {
+function filterTrips(filter, allTripsList, currentTripsList, searchText) {
+  if (searchText) {
+    allTripsList = allTripsList.filter((trip) => (
+      trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear() + " " + 
+      trip.notes + " " + 
+      JSON.stringify(trip)).toLowerCase().includes(searchText.toLowerCase()));
+  }
   if (filter[0] !== 0){
-    return allTripsList.filter((trip) => new Date(trip.date.toDateString()) < (new Date(new Date().toDateString())) && filter[0] === 1 ? true : (trip.date.toDateString()) === (new Date().toDateString()) && filter[0] === 2 ? true : (new Date(trip.date.toDateString()) > (new Date(new Date().toDateString())) && filter[0] === 3) ? true : false);
+    return allTripsList.filter((trip) => (
+      new Date(trip.date.toDateString()) < (new Date(new Date().toDateString())) && filter[0] === 1 ? true : 
+      (trip.date.toDateString()) === (new Date().toDateString()) && filter[0] === 2 ? true : 
+      (new Date(trip.date.toDateString()) > (new Date(new Date().toDateString())) && filter[0] === 3) ? true : 
+      false)
+    );
   }
   if (filter[0] === 0){
     return allTripsList;
@@ -21,10 +32,12 @@ function filterTrips(filter, allTripsList, currentTripsList) {
 
 export default function Trips(props) {
   const [filter, setFilter] = React.useState([0, true]);
+  const [searchText, search] = React.useState("");
   const [currentTripsList, setTrips] = React.useState([]);
   const [allTripsList, setAllTrips] = React.useState([]);
   const [stillLoading, setStillLoading] = React.useState(true);
   const [showTrips, setShowTrips] = React.useState(false);
+
 
   const [expanded, setExpanded] = React.useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
@@ -62,7 +75,7 @@ export default function Trips(props) {
   
 
   if (filter[1]) {
-    var trips = filterTrips(filter, allTripsList, currentTripsList);
+    var trips = filterTrips(filter, allTripsList, currentTripsList, searchText);
     trips.sort((a, b) => new Date(b.date) - new Date(a.date));
     setTrips(trips);
     setFilter([filter[0], false]);
@@ -91,13 +104,18 @@ export default function Trips(props) {
   return (
     <>
     <div className="row">
-    <div className="divBox" style={{minHeight: 40}}>
+    <div className="divBox" style={{minHeight: 40, marginRight: "auto"}}>
         <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user}/>)}>
           Create Trip
         </Button>
       </div>
 
-      <div className="divBox" style={{minWidth: "15%", marginLeft: "auto"}}>
+      <div className="divBox">
+        <Tooltip title="Search by date, vehicles, waypoints, notes, stats, etc.">
+          <TextField label="Search" type="search" variant="outlined" size="small" onChange={(event) => {search(event.target.value); setFilter([filter[0], true])}}/>
+        </Tooltip>
+      </div>    
+      <div className="divBox" style={{minWidth: "15%"}}>
         <TextField
           label="Filter"
           variant="outlined"
@@ -107,7 +125,7 @@ export default function Trips(props) {
         >
           <MenuItem value={0}>All</MenuItem>
           <MenuItem value={1}>Past</MenuItem>
-          <MenuItem value={2}>Current</MenuItem>
+          <MenuItem value={2}>Today</MenuItem>
           <MenuItem value={3}>Future</MenuItem>
         </TextField> 
       </div>     
