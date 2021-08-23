@@ -5,7 +5,7 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
 
-export default function Map({ height, width}) {
+export default function MapBox({ height, width, mapState}) {
     const mapContainer = React.useRef(null);
     const map = React.useRef(null);
 
@@ -14,19 +14,29 @@ export default function Map({ height, width}) {
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [30.5, 50.5],
+            center: [144.946457, -37.840935],
             zoom: 9
         });
 
-        // Create a new marker.
-        const marker = new mapboxgl.Marker()
-            .setLngLat([30.5, 50.5])
-            .addTo(map.current);
+        console.log("Map initialised");
+
+        map.current.addControl(new mapboxgl.NavigationControl());
+        
+        if (mapState.markerCoords){
+            for (let i = 0; i < mapState.markerCoords.length; i++) {
+                // Create a new marker.
+                new mapboxgl.Marker()
+                .setLngLat([mapState.markerCoords[i][0], mapState.markerCoords[i][1]])
+                .addTo(map.current);
+            }
+        }
+        
     });
 
+    
     return (
-        <div>
-            <div ref={mapContainer} style={{height: height}} />
+        <div style={{overflow: "hidden"}}>
+            <div ref={mapContainer} style={{height: height, width: width}} />
         </div>
     )
 }

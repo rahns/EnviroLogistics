@@ -4,7 +4,7 @@ import { Button, Stepper, Step, StepLabel, Grid, TextField } from "@material-ui/
 import { DateTimePicker } from "@material-ui/pickers";
 import { makeStyles } from '@material-ui/core/styles';
 import CheckboxList from './components/CheckboxList.js'
-import Map from './components/Map.js'
+import MapBox from './components/MapBox.js'
 import Trips from './Trips';
 import { getExampleCars, getExampleLocations, Location } from './Classes';
 
@@ -54,7 +54,7 @@ export default function AddTrip(props) {
                 {/* <DragDropList initialList={locations} /> */}
               </Grid>
               <Grid item xs>
-                <Map height="700px" />
+                <MapBox height="700px" />
               </Grid>
             </Grid>
           </div >

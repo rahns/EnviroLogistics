@@ -1,15 +1,15 @@
 import '../App.css';
 import React from 'react';
-import {ExpandMore, Event, Timer, AvTimer, Straighten, LocalShipping, Eco, Room} from '@material-ui/icons';
+import {ExpandMore, Event, Timer, AvTimer, Straighten, LocalShipping, Eco, Room, Map} from '@material-ui/icons';
 import {Button, Accordion, AccordionActions, AccordionDetails, AccordionSummary, Divider, 
-  Typography, Chip, Tooltip, Dialog, DialogTitle, DialogActions} from "@material-ui/core";
+  Typography, Chip, Tooltip, Dialog, DialogTitle, DialogActions, IconButton} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import { database } from '../App';
 
 const useStyles = makeStyles((theme) => ({
   Accordion: {
     "&.MuiAccordion-root:before": {
-      backgroundColor: "rgba(255, 255, 255, 0)"
+      backgroundColor: "rgba(255, 255, 255, 0)",
     },
     maxWidth: "100%"
   },
@@ -17,11 +17,17 @@ const useStyles = makeStyles((theme) => ({
   wrapChipLabel: { marginBottom: 5, marginTop: 5, overflowWrap: 'break-word', whiteSpace: 'normal', textOverflow: 'clip' }
 }));
 
+const handleViewMap = (event, modalOpener, setMapState, markerCoordinates) => {
+  setMapState(markerCoordinates);
+  modalOpener(true);
+  event.stopPropagation()
+}
+
 export default function TripAccordian(props) {
   const trip = props.trip;
   const vehicleTrips = [];
   for (let i = 0; i < trip.vehicleTrips.length; i++) {
-    vehicleTrips.push(<VehicleAccordian vehicleTrip={trip.vehicleTrips[i]} />);
+    vehicleTrips.push(<VehicleAccordian vehicleTrip={trip.vehicleTrips[i]} modalOpener={props.modalOpener} setMapState={props.setMapState}/>);
     vehicleTrips.push(<div style={{margin: 7}}></div>);
   };
 
@@ -41,16 +47,25 @@ export default function TripAccordian(props) {
   return (
     <Accordion className="roundedCorners" classes={{root: classes.Accordion}} expanded={props.expanded === props.id} onChange={props.changeHandler(props.id)}>
       <AccordionSummary expandIcon={<ExpandMore />} style={{marginLeft: 3}}>
-        <div style={{display: "flex", flexDirection: "column"}}>
-          <div className="row"><Chip variant="outlined" color='primary' icon={<Event />} label={<Typography variant="h6">{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear()}</Typography>} /></div>
-          {trip.notes ? <div className="row"><Chip classes={{ root: classes.wrapChipRoot, label: classes.wrapChipLabel, }} variant="outlined" color='primary' label={<Typography variant="body2"><b>Notes:</b> {trip.notes}</Typography>} /></div> : null}
-          <div className="row">
-            <Tooltip title="Consecutive Duration"><Chip icon={<Timer />} label={"Duration: " + trip.consecutiveDuration + " minutes"}/></Tooltip>
-            <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Summed times: " + trip.totalDuration + " minutes"} /></Tooltip>
-            <Tooltip title="Total Distance"><Chip icon={<Straighten />} label={trip.distance + "km"} /></Tooltip>
-            <Tooltip title="Number of Vehicles Used"><Chip icon={<LocalShipping />} label={trip.vehicleTrips.length + " vehicle" + (trip.vehicleTrips.length === 1 ? "" : "s")} /></Tooltip>
-            <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={trip.emissions + " grams of CO2"} /></Tooltip>
-          </div>
+        <div className="row" style={{width: "100%", alignItems: "center"}}>
+          <div style={{display: "flex", flexDirection: "column", marginRight: "auto"}}>
+              <div className="row"><Chip variant="outlined" color='primary' icon={<Event />} label={<Typography variant="h6">{trip.date.getDate() + "/" + (trip.date.getMonth()+1) + "/" + trip.date.getFullYear()}</Typography>} /></div>
+              {trip.notes ? <div className="row"><Chip classes={{ root: classes.wrapChipRoot, label: classes.wrapChipLabel, }} variant="outlined" color='primary' label={<Typography variant="body2"><b>Notes:</b> {trip.notes}</Typography>} /></div> : null}
+              <div className="row">
+                <Tooltip title="Consecutive Duration"><Chip icon={<Timer />} label={"Duration: " + trip.consecutiveDuration + " minutes"}/></Tooltip>
+                <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Aggregate: " + trip.totalDuration + " minutes"} /></Tooltip>
+                <Tooltip title="Total Distance"><Chip icon={<Straighten />} label={trip.distance + "km"} /></Tooltip>
+                <Tooltip title="Number of Vehicles Used"><Chip icon={<LocalShipping />} label={trip.vehicleTrips.length + " vehicle" + (trip.vehicleTrips.length === 1 ? "" : "s")} /></Tooltip>
+                <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={trip.emissions + " grams of CO2"} /></Tooltip>
+              </div>
+            </div>
+            <div>
+              <Tooltip title="Show on map">
+                <IconButton color="primary" onClick={(event) => handleViewMap(event, props.modalOpener, props.setMapState, {})} style={{padding: 5}}>
+                  <Map />
+                </IconButton>                
+              </Tooltip>
+            </div>
         </div>
       </AccordionSummary>
       <AccordionDetails className="innerAccordian">
@@ -82,16 +97,29 @@ function VehicleAccordian(props) {
   const vehicle = vehicleTrip.vehicle;
   const legs = []
   for (let i = 0; i < vehicleTrip.tripLegs.length; i++) {
-    legs.push(<DisplayLeg leg={vehicleTrip.tripLegs[i]} />)
+    legs.push(<DisplayLeg leg={vehicleTrip.tripLegs[i]} modalOpener={props.modalOpener} setMapState={props.setMapState}/>)
   };
   return (
     <Accordion className={`roundedCorners fillWidth`} classes={{root: classes.Accordion}}>
       <AccordionSummary expandIcon={<ExpandMore />} style={{minHeight: "1px !important"}}>
-        <div className="row">
-          <Tooltip title="Vehicle Used"><Chip variant="outlined" icon={<LocalShipping />} label={vehicle.toString()}/></Tooltip>
-          <Tooltip title="Duration"><Chip icon={<Timer />} label={vehicleTrip.vehicleDuration + " minutes"}/></Tooltip>
-          <Tooltip title="Distance"><Chip icon={<Straighten />} label={vehicleTrip.vehicleDistance + "km"} /></Tooltip>
-          <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={vehicleTrip.vehicleEmissions + " grams of CO2"} /></Tooltip>
+        <div className="row" style={{width: "100%", alignItems: "center"}}>
+          <div style={{display: "flex", flexDirection: "column", marginRight: "auto"}}>
+            <div className="row" style={{marginBottom: 0, paddingTop: 0}}>
+              <Tooltip title="Vehicle Used"><div className="row"><Chip variant="outlined" color='primary' classes={{ root: classes.wrapChipRoot, label: classes.wrapChipLabel, }} label={<b>{vehicle.toString()}</b>}/></div></Tooltip>
+            </div>
+            <div className="row" style={{paddingTop: 0}}>
+              <Tooltip title="Duration"><Chip icon={<Timer />} label={vehicleTrip.vehicleDuration + " minutes"}/></Tooltip>
+              <Tooltip title="Distance"><Chip icon={<Straighten />} label={vehicleTrip.vehicleDistance + "km"} /></Tooltip>
+              <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={vehicleTrip.vehicleEmissions + " grams of CO2"} /></Tooltip>
+            </div>
+          </div>
+          <div>
+            <Tooltip title="Show on map">
+              <IconButton color="primary" onClick={event => handleViewMap(event, props.modalOpener, props.setMapState, {})} style={{padding: 5}}>
+                <Map />
+              </IconButton>
+            </Tooltip>
+          </div>
         </div>
       </AccordionSummary>
       <AccordionDetails style={{display: "block"}}>
@@ -112,11 +140,20 @@ function DisplayLeg(props) {
   return (
     <div className="divBox" style={{marginBottom: 10, width: "calc(100% - 20px)"}}>
       <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 5}}>
-        <div style={{margin: "auto", marginLeft: 0}}>
+        <div style={{marginRight: "auto", marginLeft: 0}}>
           <Tooltip title="Waypoints" style={{margin: 4, marginLeft: 0}}><Chip variant="outlined" icon={<Room />} label={<>{props.leg.startLocation.nickname} to {props.leg.endLocation.nickname}</>}/></Tooltip>
           <Tooltip title="Duration" style={{margin: 4, marginLeft: 0}}><Chip icon={<Timer />} label={props.leg.duration + " minutes"}/></Tooltip>
           <Tooltip title="Distance" style={{margin: 4, marginLeft: 0}}><Chip icon={<Straighten />} label={props.leg.distance + "km"} /></Tooltip>
           <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={props.leg.legEmissions + " grams of CO2"} /></Tooltip>
+        </div>
+        <div>
+          <Tooltip title="Show on map">
+            <IconButton color="primary" onClick={event => handleViewMap(
+                event, props.modalOpener, props.setMapState, {markerCoords: [[origin_long, origin_lat], [dest_long, dest_lat]]}
+                )} style={{padding: 5}}>
+              <Map />
+            </IconButton>
+          </Tooltip>
         </div>
         <Button target="_blank" href={navURL} color="primary" size="small" >Navigate</Button>
       </div>

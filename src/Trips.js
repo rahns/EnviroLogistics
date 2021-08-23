@@ -2,9 +2,10 @@ import './App.css';
 import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, MenuItem, TextField, Typography, LinearProgress, Grow, Tooltip} from "@material-ui/core";
+import {Button, MenuItem, TextField, Typography, LinearProgress, Grow, Tooltip, Modal, Backdrop} from "@material-ui/core";
 import TripAccordian from './components/TripAccordian';
 import { getExampleOptimisedTrip, getExampleTrips, Trip } from './Classes';
+import MapBox from './components/MapBox.js'
 
 function filterTrips(filter, allTripsList, currentTripsList, searchText) {
   if (searchText) {
@@ -37,7 +38,10 @@ export default function Trips(props) {
   const [allTripsList, setAllTrips] = React.useState([]);
   const [stillLoading, setStillLoading] = React.useState(true);
   const [showTrips, setShowTrips] = React.useState(false);
+  const [modalState, setModalOpen] = React.useState(false);
 
+  // Map state:
+  const [mapState, setMapState] = React.useState({});
 
   const [expanded, setExpanded] = React.useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
@@ -73,10 +77,9 @@ export default function Trips(props) {
     getExampleOptimisedTrip().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) });
   }
   
-
+  allTripsList.sort((a, b) => new Date(b.date) - new Date(a.date));
   if (filter[1]) {
     var trips = filterTrips(filter, allTripsList, currentTripsList, searchText);
-    trips.sort((a, b) => new Date(b.date) - new Date(a.date));
     setTrips(trips);
     setFilter([filter[0], false]);
   }
@@ -90,7 +93,8 @@ export default function Trips(props) {
       tripComponents.push(
         <Grow in={showTrips} {...(showTrips ? { timeout: Math.min(200 + (i*500), 5000) } : {})} >
           <div>
-            <TripAccordian trip={currentTripsList[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user}/>
+            <TripAccordian trip={currentTripsList[i]} id={i} changeHandler={handleChange} expanded={expanded} user={props.user} 
+              modalOpener={setModalOpen} setMapState={setMapState}/>
             <div style={{margin: 4}}></div>
           </div>
         </Grow>);
@@ -111,7 +115,7 @@ export default function Trips(props) {
       </div>
 
       <div className="divBox">
-        <Tooltip title="Search by date, vehicles, waypoints, notes, stats, etc.">
+        <Tooltip title="Search by date, vehicles, waypoints, notes, roads, stats, etc.">
           <TextField label="Search" type="search" variant="outlined" size="small" onChange={(event) => {search(event.target.value); setFilter([filter[0], true])}}/>
         </Tooltip>
       </div>    
@@ -137,6 +141,20 @@ export default function Trips(props) {
       </div>
     </div>
 
+    <Modal open={modalState}
+        onClose={() => setModalOpen(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{timeout: 500}}>
+        <Grow in={modalState}>
+          <div onClick={() => setModalOpen(false)} style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100vh - 76px)"}}>
+            <div className="divBox" onClick={(event) => event.stopPropagation()}>
+              <MapBox height="80vh" width="80vw" mapState={mapState}/>
+            </div>
+          </div>
+        </Grow>
+      </Modal>
+
     <div className='row'><div className="divBox"><Typography variant='subtitle1'><b>Buttons for Testing:</b></Typography></div></div>
     <div className="row">
       <div className="divBox">
@@ -144,6 +162,9 @@ export default function Trips(props) {
       </div>
       <div className="divBox">
         <Button onClick={() => database.ref('trips/' + props.user.uid + '/').remove() }>Delete All Trips</Button>
+      </div>
+      <div className="divBox">
+        <Button onClick={() => setModalOpen(true) }>Open Modal</Button>
       </div>
     </div>
   </>

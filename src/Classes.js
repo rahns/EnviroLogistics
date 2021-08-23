@@ -47,6 +47,8 @@ export class TripLeg {
     this.directions = directions;
     this.legEmissions = vehicle.avgEmissionsPerKm * distance;
   }
+
+  getDirectionsGeometry() { if (this.directions) {return this.directions.geometry.coordinates} else {return undefined}}
 };
 
 export class VehicleTrip {
@@ -58,6 +60,10 @@ export class VehicleTrip {
         [accumulator[0] + currentTripLeg.distance, accumulator[1] + currentTripLeg.duration], [0, 0]
     );
     this.vehicleEmissions = vehicle.avgEmissionsPerKm * this.vehicleDistance;
+  }
+
+  getDirectionsGeometry() {
+    return this.tripLegs.map(leg => leg.getDirectionsGeometry())
   }
 }
 
@@ -79,6 +85,11 @@ export class Trip {
       );
     }
   }
+
+  getDirectionsGeometry() {
+    return this.vehicleTrips.map(i => i.getDirectionsGeometry());
+  }
+
   objectToInstance(obj, dbKey) {
     this.dbKey = dbKey;
     this.notes = obj.notes;
