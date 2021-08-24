@@ -22,7 +22,7 @@ export default function MapBox({ height, width, mapState}) {
 
         map.current.addControl(new mapboxgl.NavigationControl());
         
-        if (mapState.markerCoords){
+        if (mapState && mapState.markerCoords){
             for (let i = 0; i < mapState.markerCoords.length; i++) {
                 // Create a new marker.
                 new mapboxgl.Marker()
