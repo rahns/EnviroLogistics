@@ -5,7 +5,7 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
 
-export default function MapBox({ height, width, mapState}) {
+export default function MapBox({ height, width, mapState }) {
     const mapContainer = React.useRef(null);
     const map = React.useRef(null);
     const [markers, setMarkers] = React.useState([])
@@ -26,12 +26,16 @@ export default function MapBox({ height, width, mapState}) {
     });
 
     React.useEffect(() => {
+        map.current.setCenter([144.946457, -37.840935]);
+        map.current.setZoom(9);
         for (let i = 0; i < markers.length; i++) { markers[i].remove() }; // remove existing markers
         if (mapState && mapState.markerCoords){
             let markerList = []
             for (let i = 0; i < mapState.markerCoords.length; i++) {
                 // Create a new marker.
-                markerList.push(new mapboxgl.Marker().setLngLat([mapState.markerCoords[i][0], mapState.markerCoords[i][1]]).addTo(map.current));
+                markerList.push(new mapboxgl.Marker()
+                .setLngLat([mapState.markerCoords[i][0], mapState.markerCoords[i][1]])
+                .addTo(map.current));
             }
             setMarkers(markerList);
         }
@@ -39,8 +43,8 @@ export default function MapBox({ height, width, mapState}) {
     }, [mapState])  // Runs only when mapState changes
     
     return (
-        <div style={{overflow: "hidden"}}>
-            <div ref={mapContainer} style={{height: height, width: width}} />
+        <div>
+            <div ref={mapContainer} style={{height: height, width: width, borderRadius: "13px"}} />
         </div>
     )
 }

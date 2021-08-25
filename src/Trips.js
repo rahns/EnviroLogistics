@@ -2,7 +2,7 @@ import './App.css';
 import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, MenuItem, TextField, Typography, LinearProgress, Grow, Tooltip, Modal, Backdrop} from "@material-ui/core";
+import {Button, MenuItem, TextField, Typography, LinearProgress, Grow, Tooltip, Backdrop} from "@material-ui/core";
 import TripAccordian from './components/TripAccordian';
 import { getExampleOptimisedTrip, getExampleTrips, Trip } from './Classes';
 import MapBox from './components/MapBox.js'
@@ -39,8 +39,8 @@ export default function Trips(props) {
   const [stillLoading, setStillLoading] = React.useState(true);
   const [showTrips, setShowTrips] = React.useState(false);
   const [modalState, setModalOpen] = React.useState(false);
-  const [mapIsLoaded, loadMap] = React.useState(false);
-  if (modalState && !mapIsLoaded) {loadMap(true)}; // only load map component if already been requested
+  const [mapIsLoaded, setMapIsLoaded] = React.useState(false);
+  if (modalState && !mapIsLoaded) {setMapIsLoaded(true)}; // only load map component if already been requested
 
   // Map state:
   const [mapState, setMapState] = React.useState({});
@@ -143,17 +143,18 @@ export default function Trips(props) {
       </div>
     </div>
 
-    {mapIsLoaded ? 
+    {mapIsLoaded ? // delay the initalisation of the Map component until first requested
     <div style={{position: "fixed", zIndex: 1, top: 0, left: 0, height: "100%", width: "100%", pointerEvents: "none"}}>
       <Backdrop in={modalState} style={{height: "calc(100vh - 56px)"}}></Backdrop>
       <Grow in={modalState}>
         <div onClick={() => setModalOpen(false)} style={{pointerEvents: "auto", display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100vh - 56px)"}}>
-          <div className="divBox" onClick={(event) => event.stopPropagation()}>
+          <div className="divBox" style={{padding: 0}} onClick={(event) => event.stopPropagation()}>
             <MapBox height="80vh" width="80vw" mapState={mapState}/>
           </div>
         </div>
       </Grow>
-    </ div> : null}
+    </ div> : 
+    null}
 
     <div className='row'><div className="divBox"><Typography variant='subtitle1'><b>Buttons for Testing:</b></Typography></div></div>
     <div className="row">
