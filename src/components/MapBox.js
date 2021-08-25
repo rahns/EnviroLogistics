@@ -8,6 +8,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuM
 export default function MapBox({ height, width, mapState}) {
     const mapContainer = React.useRef(null);
     const map = React.useRef(null);
+    const [markers, setMarkers] = React.useState([])
 
     React.useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -22,17 +23,20 @@ export default function MapBox({ height, width, mapState}) {
 
         map.current.addControl(new mapboxgl.NavigationControl());
         
-        if (mapState && mapState.markerCoords){
-            for (let i = 0; i < mapState.markerCoords.length; i++) {
-                // Create a new marker.
-                new mapboxgl.Marker()
-                .setLngLat([mapState.markerCoords[i][0], mapState.markerCoords[i][1]])
-                .addTo(map.current);
-            }
-        }
-        
     });
 
+    React.useEffect(() => {
+        for (let i = 0; i < markers.length; i++) { markers[i].remove() }; // remove existing markers
+        if (mapState && mapState.markerCoords){
+            let markerList = []
+            for (let i = 0; i < mapState.markerCoords.length; i++) {
+                // Create a new marker.
+                markerList.push(new mapboxgl.Marker().setLngLat([mapState.markerCoords[i][0], mapState.markerCoords[i][1]]).addTo(map.current));
+            }
+            setMarkers(markerList);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mapState])  // Runs only when mapState changes
     
     return (
         <div style={{overflow: "hidden"}}>

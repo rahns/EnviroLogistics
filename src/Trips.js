@@ -39,6 +39,8 @@ export default function Trips(props) {
   const [stillLoading, setStillLoading] = React.useState(true);
   const [showTrips, setShowTrips] = React.useState(false);
   const [modalState, setModalOpen] = React.useState(false);
+  const [mapIsLoaded, loadMap] = React.useState(false);
+  if (modalState && !mapIsLoaded) {loadMap(true)}; // only load map component if already been requested
 
   // Map state:
   const [mapState, setMapState] = React.useState({});
@@ -141,19 +143,17 @@ export default function Trips(props) {
       </div>
     </div>
 
-    <Modal open={modalState}
-        onClose={() => setModalOpen(false)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{timeout: 500}}>
-        <Grow in={modalState}>
-          <div onClick={() => setModalOpen(false)} style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100vh - 76px)"}}>
-            <div className="divBox" onClick={(event) => event.stopPropagation()}>
-              <MapBox height="80vh" width="80vw" mapState={mapState}/>
-            </div>
+    {mapIsLoaded ? 
+    <div style={{position: "fixed", zIndex: 1, top: 0, left: 0, height: "100%", width: "100%", pointerEvents: "none"}}>
+      <Backdrop in={modalState} style={{height: "calc(100vh - 56px)"}}></Backdrop>
+      <Grow in={modalState}>
+        <div onClick={() => setModalOpen(false)} style={{pointerEvents: "auto", display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100vh - 56px)"}}>
+          <div className="divBox" onClick={(event) => event.stopPropagation()}>
+            <MapBox height="80vh" width="80vw" mapState={mapState}/>
           </div>
-        </Grow>
-      </Modal>
+        </div>
+      </Grow>
+    </ div> : null}
 
     <div className='row'><div className="divBox"><Typography variant='subtitle1'><b>Buttons for Testing:</b></Typography></div></div>
     <div className="row">
