@@ -77,6 +77,19 @@
   display: block !important;
 }
 
+.closeButton {
+  z-index: 2;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 0.2px;
+}
+
 .infoCard {
   margin: #614385;
   border: 5px outset #614385;
@@ -119,4 +132,33 @@
   background: #ffffff;
   border-radius: 18px;
   border: 1px solid #cfcece;
+}
+
+.marker {width:0; height:0;}
+
+.marker  span {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-sizing:border-box;
+  width: 30px;
+  height: 30px;
+  color:#fff;
+  border:solid 2px;
+  border-radius: 0 70% 70%;
+  box-shadow:0 0 2px #000;
+  cursor: pointer;
+  transform-origin:0 0;
+  transform: rotateZ(-135deg);
+}
+
+.marker b {transform: rotateZ(135deg)}
+
+.mapboxgl-popup {
+  max-width: 200px;
+}
+
+.mapboxgl-popup-content {
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
 }

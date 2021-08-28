@@ -5,7 +5,6 @@ import {BottomNavigation, BottomNavigationAction, Typography, Dialog, DialogActi
   Button, DialogContent, Avatar, Chip, Tooltip, Grow} from "@material-ui/core";
 import {Map, Timeline, LocalShipping, ExitToApp} from '@material-ui/icons';
 import Trips from './Trips';
-import Analyse from './Analyse';
 import Fleet from './Fleet';
 import Graph from './GraphPage'
 

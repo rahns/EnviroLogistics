@@ -8,7 +8,57 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuM
 export default function MapBox({ height, width, mapState }) {
     const mapContainer = React.useRef(null);
     const map = React.useRef(null);
-    const [markers, setMarkers] = React.useState([])
+    const [mapReady, setMapReady] = React.useState(false);
+    const [currentMapState, setCurrentMapState] = React.useState(undefined);
+
+    const updateMap = () => {
+        if (currentMapState) {
+            for (let i = 0; i < currentMapState.markers.length; i++) { currentMapState.markers[i].remove(); console.log('done removing markers') }; // remove existing markers
+            for (let i = 0; i < currentMapState.paths.length; i++) {if (map.current.getSource(i.toString())) {map.current.removeLayer(i.toString()); map.current.removeSource(i.toString()); console.log('done removing paths')}} // remove any existing path lines on the map
+        }
+
+        if (mapState) {
+            for (let i = 0; i < mapState.markers.length; i++) {
+                mapState.markers[i].addTo(map.current);
+            }
+            for (let i = 0; i < mapState.paths.length; i++) {
+                map.current.addSource(i.toString(), 
+                {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': {
+                        'type': 'LineString',
+                        'coordinates': mapState.paths[i][0]
+                        }
+                    }
+                });
+                map.current.addLayer({
+                    'id': i.toString(),
+                    'type': 'line',
+                    'source': i.toString(),
+                    'layout': {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    'paint': {
+                        'line-color': mapState.paths[i][1],
+                        'line-width': 8
+                    }
+                });
+            }
+            let bbox = mapState.getBoundingBox()
+            if (bbox) {
+                map.current.fitBounds(bbox, {padding: 60});
+            }
+            else {
+                map.current.setCenter([144.946457, -37.840935]);
+                map.current.setZoom(9);
+            }
+            setCurrentMapState(mapState);
+        }
+    }
 
     React.useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -23,24 +73,15 @@ export default function MapBox({ height, width, mapState }) {
 
         map.current.addControl(new mapboxgl.NavigationControl());
         
+        map.current.on('load', () => setMapReady(true))
     });
 
     React.useEffect(() => {
-        map.current.setCenter([144.946457, -37.840935]);
-        map.current.setZoom(9);
-        for (let i = 0; i < markers.length; i++) { markers[i].remove() }; // remove existing markers
-        if (mapState && mapState.markerCoords){
-            let markerList = []
-            for (let i = 0; i < mapState.markerCoords.length; i++) {
-                // Create a new marker.
-                markerList.push(new mapboxgl.Marker()
-                .setLngLat([mapState.markerCoords[i][0], mapState.markerCoords[i][1]])
-                .addTo(map.current));
-            }
-            setMarkers(markerList);
+        if (mapReady) {
+            updateMap();   
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [mapState])  // Runs only when mapState changes
+    }, [mapState, mapReady])  // Runs only when mapState or mapReady changes
     
     return (
         <div>
