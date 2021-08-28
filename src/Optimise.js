@@ -5,7 +5,9 @@ export async function optimise(tripDate, vehicleList, locationList, depotLocatio
     let matrix_data = getMatrices(locationList, depotLocation);
     
     // Construct problem for passing to solver:
-    let planObj = {jobs: [{id: "job", deliveries: generateDeliveriesList(locationList.length)}]};
+    let planObj = {jobs: generateDeliveriesList(locationList.length).map(e => {
+        return {id: JSON.stringify(e), deliveries: [e]}
+    })};
     let fleetObj = {
         profiles: [{"name": "normal"}], 
         vehicles: generateVehiclesList(vehicleList)
@@ -22,16 +24,18 @@ export async function optimise(tripDate, vehicleList, locationList, depotLocatio
             ],
             [
                 {
-                    "type": "minimize-cost"
+                    "type": "maximize-tours"
                 }
             ],
             [
                 {
-                    "type": "minimize-duration"
+                    "type": "minimize-cost"
                 }
             ]
         ]
     };
+
+    console.log(problemObj)
 
     // Initialise and call solver:
     await window.init();
@@ -66,7 +70,7 @@ async function getMatrices(locationList, depotLocation) {
         ([{
             "matrix": "normal",
             "distances": distanceMatrix,
-            "travelTimes": durationMatrix  // times are required for solver but not used
+            "travelTimes": durationMatrix 
         }])
     ]
 }
@@ -121,8 +125,11 @@ function generateVehiclesList(vehicleList) {
 }
 
 async function responseToTrip(date, response, locationIndexMapping, notes) {
+    console.log(locationIndexMapping)
+    
 
     response = JSON.parse(response);
+    console.log(response)
     let vehicleTrips = Promise.all(response.tours.map(async tour => await tourToVehicleTrip(tour, locationIndexMapping)));
 
     return new Trip(date, await vehicleTrips, notes);
@@ -138,13 +145,16 @@ async function tourToVehicleTrip(tour, locationIndexMapping) {
         let startLocation = locationIndexMapping[stops[i-1].location.index];
         let endLocation = locationIndexMapping[stops[i].location.index];
         let directions = await getDirections(startLocation, endLocation)
+        if (directions.error) {alert(
+            "Couldn't find a driveable route between " + startLocation.nickname + " and " + endLocation.nickname + ". \nError code: "+ directions.error.message)}
         let leg = new TripLeg(
                 startLocation,
                 endLocation,
-                Math.round(directions.features[0].properties.summary.duration / 60),
-                Math.round(directions.features[0].properties.summary.distance / 1000),
+                directions.error ? 0 : Math.round(directions.features[0].properties.summary.duration / 60),
+                directions.error ? 0 : Math.round(directions.features[0].properties.summary.distance / 1000),
                 vehicle,
-                directions.features[0]
+                directions.error ? undefined : directions.features[0], 
+                directions.error
         )
         tripLegs.push(leg);
     }

@@ -2,9 +2,10 @@ import './App.css';
 import { database } from './App';
 import React from 'react';
 import AddTrip from './AddTrip';
-import {Button, MenuItem, TextField, Typography, LinearProgress, Grow, Tooltip, Backdrop} from "@material-ui/core";
+import {Button, MenuItem, TextField, Typography, LinearProgress, Grow, Tooltip, Backdrop, IconButton} from "@material-ui/core";
+import {Cancel} from '@material-ui/icons';
 import TripAccordian from './components/TripAccordian';
-import { getExampleOptimisedTrip, getExampleTrips, Trip } from './Classes';
+import { getExampleOptimisedTrip, getExampleOptimisedTrip2, getExampleOptimisedTrip3, Trip} from './Classes';
 import MapBox from './components/MapBox.js'
 
 function filterTrips(filter, allTripsList, currentTripsList, searchText) {
@@ -69,14 +70,12 @@ export default function Trips(props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [])
 
-  const testTrips = getExampleTrips();
   const addTestTrips = () => {
-    for (let i = 0; i < testTrips.length; i++){
-      props.addToDatabase('trips/', JSON.stringify(testTrips[i]));
-      console.log(testTrips[i])
-    }
     // Test the trip optimiser
     getExampleOptimisedTrip().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) });
+    getExampleOptimisedTrip2().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) });
+    getExampleOptimisedTrip3().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) });
+    alert("Takes about 10 seconds to add all 3")
   }
   
   allTripsList.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -110,63 +109,68 @@ export default function Trips(props) {
   return (
     <>
     <div className="row">
-    <div className="divBox" style={{minHeight: 40, marginRight: "auto"}}>
-        <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user}/>)}>
-          Create Trip
-        </Button>
-      </div>
-
-      <div className="divBox">
-        <Tooltip title="Search by date, vehicles, waypoints, notes, roads, stats, etc.">
-          <TextField label="Search" type="search" variant="outlined" size="small" onChange={(event) => {search(event.target.value); setFilter([filter[0], true])}}/>
-        </Tooltip>
-      </div>    
-      <div className="divBox" style={{minWidth: "15%"}}>
-        <TextField
-          label="Filter"
-          variant="outlined"
-          select
-          size='small'
-          SelectProps={{ value: filter[0], onChange: (event) => {setFilter([event.target.value, true])}}}
-        >
-          <MenuItem value={0}>All</MenuItem>
-          <MenuItem value={1}>Past</MenuItem>
-          <MenuItem value={2}>Today</MenuItem>
-          <MenuItem value={3}>Future</MenuItem>
-        </TextField> 
-      </div>     
-    </div>
-
-    <div className="row">
-      <div className={`divBox tripList`}>
-          {tripComponents}
-      </div>
-    </div>
-
-    {mapIsLoaded ? // delay the initalisation of the Map component until first requested
-    <div style={{position: "fixed", zIndex: 1, top: 0, left: 0, height: "100%", width: "100%", pointerEvents: "none"}}>
-      <Backdrop in={modalState} style={{height: "calc(100vh - 56px)"}}></Backdrop>
-      <Grow in={modalState}>
-        <div onClick={() => setModalOpen(false)} style={{pointerEvents: "auto", display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100vh - 56px)"}}>
-          <div className="divBox" style={{padding: 0}} onClick={(event) => event.stopPropagation()}>
-            <MapBox height="80vh" width="80vw" mapState={mapState}/>
-          </div>
+      <div className="divBox" style={{minHeight: 40, marginRight: "auto"}}>
+          <Button variant="contained" color="secondary" onClick={() => props.pageUpdater(<AddTrip pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user}/>)}>
+            Create Trip
+          </Button>
         </div>
-      </Grow>
-    </ div> : 
-    null}
 
-    <div className='row'><div className="divBox"><Typography variant='subtitle1'><b>Buttons for Testing:</b></Typography></div></div>
-    <div className="row">
-      <div className="divBox">
-        <Button onClick={() => addTestTrips()}>Add Some Test Trips</Button>
+        <div className="divBox">
+          <Tooltip title="Search by date, vehicles, waypoints, notes, roads, stats, etc.">
+            <TextField label="Search" type="search" variant="outlined" size="small" onChange={(event) => {search(event.target.value); setFilter([filter[0], true])}}/>
+          </Tooltip>
+        </div>    
+        <div className="divBox" style={{minWidth: "15%"}}>
+          <TextField
+            label="Filter"
+            variant="outlined"
+            select
+            size='small'
+            SelectProps={{ value: filter[0], onChange: (event) => {setFilter([event.target.value, true])}}}
+          >
+            <MenuItem value={0}>All</MenuItem>
+            <MenuItem value={1}>Past</MenuItem>
+            <MenuItem value={2}>Today</MenuItem>
+            <MenuItem value={3}>Future</MenuItem>
+          </TextField> 
+        </div>     
       </div>
-      <div className="divBox">
-        <Button onClick={() => database.ref('trips/' + props.user.uid + '/').remove() }>Delete All Trips</Button>
+
+      <div className="row">
+        <div className={`divBox tripList`}>
+            {tripComponents}
+        </div>
       </div>
-      <div className="divBox">
-        <Button onClick={() => setModalOpen(true) }>Open Modal</Button>
-      </div>
+
+      {mapIsLoaded ? // delay the initalisation of the Map component until first requested
+      <div style={{position: "fixed", zIndex: 1, top: 0, left: 0, height: "100%", width: "100%", pointerEvents: "none"}}>
+        <Backdrop in={modalState} style={{height: "calc(100vh - 56px)"}}></Backdrop>
+        <Grow in={modalState}>
+          <div onClick={() => setModalOpen(false)} style={{pointerEvents: "auto", display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100vh - 56px)"}}>
+            <div style={{position: "relative", padding: 0, backgroundColor: "white", borderRadius: "13px"}} onClick={(event) => event.stopPropagation()}>
+              <div className="closeButton">
+                <IconButton size="small" style={{padding: 1}} onClick={() => setModalOpen(false)}>
+                  <Cancel fontSize="inherit" />
+                </IconButton>
+              </div>
+              <MapBox height="75vh" width="80vw" mapState={mapState}/>
+            </div>
+          </div>
+        </Grow>
+      </ div> : 
+      null}
+
+      <div className='row'><div className="divBox"><Typography variant='subtitle1'><b>Buttons for Testing:</b></Typography></div></div>
+      <div className="row">
+        <div className="divBox">
+          <Button onClick={() => addTestTrips()}>Add Some Optimised Test Trips</Button>
+        </div>
+        <div className="divBox">
+          <Button onClick={() => database.ref('trips/' + props.user.uid + '/').remove() }>Delete All Trips</Button>
+        </div>
+        <div className="divBox">
+          <Button onClick={() => setModalOpen(true) }>Open Modal</Button>
+        </div>
     </div>
   </>
   );
