@@ -3,7 +3,7 @@
 import React from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 
-mapboxgl.accessToken = 'pk.eyJ1IjoicmFobnN0YXZhciIsImEiOiJjazA2YXBvODcwNzZlM2NuMHlyYWUxY3YzIn0.3PUdd2L5DSLXWYcUnosvaQ';
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
 export default function MapBox({ height, width, mapState }) {
     const mapContainer = React.useRef(null);
@@ -38,6 +38,16 @@ export default function MapBox({ height, width, mapState }) {
                 .addTo(map.current));
             }
             setMarkers(markerList);
+        }
+        if (mapState && mapState.controls) {
+            mapState.controls.forEach((element) => {
+                let control = element.control;
+                let position = element.position;
+                if (!map.current.hasControl(control)) {
+                    // At this point we're assuming controls are never removed
+                    map.current.addControl(control, position);
+                }
+            })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mapState])  // Runs only when mapState changes

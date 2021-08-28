@@ -7,6 +7,10 @@ import CheckboxList from './components/CheckboxList.js'
 import MapBox from './components/MapBox.js'
 import Trips from './Trips';
 import { getExampleCars, getExampleLocations, Location } from './Classes';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import { database } from './App';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,18 +47,15 @@ export default function AddTrip(props) {
           <div>
             <Grid container spacing={2}>
               <Grid item xs>
-                <div>
-                  <TextField id="geocoder-input" label="Search Address Here" onChange={(e) => setGeocoderInput(e.target.value)} />
-                  <Button variant="contained" color="secondary">Search</Button>
-                  <TextField id="location-nickname-input" label="Nickname for Location" onChange={(e) => setlocNickname(e.target.value)} />
-                  <Button variant="contained" color="secondary" onClick={() => setLocations([new Location(0, 0, locNickname), ...locations])}>Add</Button>
-
+                <div id='locInput'>
                   <CheckboxList items={locations} handleToggle={handleToggle(setLocsChecked)} checked={locsChecked} />
+                  <TextField id="location-nickname-input" label="Nickname for Location" onChange={(e) => setlocNickname(e.target.value)} />
+                  <Button variant="contained" color="secondary" onClick={() => addLocation()}>Add From Marker</Button>
+
                 </div>
-                {/* <DragDropList initialList={locations} /> */}
               </Grid>
               <Grid item xs>
-                <MapBox height="700px" />
+                <MapBox height="60vh" width="70vw" mapState={mapState} />
               </Grid>
             </Grid>
           </div >
@@ -91,11 +92,32 @@ export default function AddTrip(props) {
   };
 
   //waypoint page constants
-  const [geocoderInput, setGeocoderInput] = React.useState('');
   const [locNickname, setlocNickname] = React.useState('');
   const [locsChecked, setLocsChecked] = React.useState([]);
   const [locations, setLocations] = React.useState(getExampleLocations());
   const [vehiChecked, setVehiChecked] = React.useState([]);
+  const [geocoderResult, setGeocoderResult] = React.useState([]);
+
+  const geocoder = new MapboxGeocoder({
+    accessToken: process.env.REACT_APP_MAPBOX_API_KEY,
+    marker: true,
+    mapboxgl: mapboxgl,
+    proximity: {
+      // Prioritise coordinates near Melbourne
+      latitude: -37.8136,
+      longitude: 144.9631
+    }
+  })
+    .on('result', ({ result }) => {
+      setGeocoderResult(result.geometry.coordinates);
+    });;
+
+  const [mapState, setMapState] = React.useState({
+    controls: [{
+      control: geocoder,
+      position: "top-left"
+    }]
+  });
 
   const handleToggle = (updater) => (checked) => (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -109,6 +131,20 @@ export default function AddTrip(props) {
 
     updater(newChecked);
   };
+
+  const addLocation = () => {
+    if (geocoderResult != [] && locNickname != '') {
+      setLocations([new Location(geocoderResult[1], geocoderResult[0], locNickname), ...locations]);
+      console.log("added location " + locNickname + " at coordinates " + geocoderResult[1].toString() + " " + geocoderResult[0].toString())
+    }
+    else {
+      // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      //   <Alert onClose={handleClose} severity="success">
+      //     This is a success message!
+      //   </Alert>
+      // </Snackbar>
+    }
+  }
 
   //vehicle page constants
   const cars = getExampleCars();
