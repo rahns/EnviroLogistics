@@ -7,6 +7,7 @@ import {Map, Timeline, LocalShipping, ExitToApp} from '@material-ui/icons';
 import Trips from './Trips';
 import Analyse from './Analyse';
 import Fleet from './Fleet';
+import Graph from './GraphPage'
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -71,7 +72,7 @@ export default function Main(props) {
             pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user} />);
             break;
           case 1:
-            pageUpdater(<Analyse pageUpdater={pageUpdater} addToDatabase={addToDatabase} user = {user}/>);
+            pageUpdater(<Graph pageUpdater={pageUpdater} addToDatabase={addToDatabase} user = {user}/>);
             break;
           case 2:
             pageUpdater(<Fleet pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user}/>);

@@ -15,7 +15,7 @@
     "axios": "^0.21.1",
     "date-fns": "^2.23.0",
     "firebase": "^8.9.0",
-    "mapbox-gl": "^2.4.0",
+    "mapbox-gl": "^2.4.1",
     "react": "^17.0.2",
     "react-awesome-modal": "^2.0.5",
     "react-beautiful-dnd": "^13.1.0",
