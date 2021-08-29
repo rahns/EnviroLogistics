@@ -2,6 +2,7 @@
 
 import React from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import { MapState } from '../Classes';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
@@ -18,36 +19,41 @@ export default function MapBox({ height, width, mapState }) {
         }
 
         if (mapState) {
-            for (let i = 0; i < mapState.markers.length; i++) {
-                mapState.markers[i].addTo(map.current);
+            if (mapState.markers) {
+                for (let i = 0; i < mapState.markers.length; i++) {
+                    mapState.markers[i].addTo(map.current);
+                }
             }
-            for (let i = 0; i < mapState.paths.length; i++) {
-                map.current.addSource(i.toString(), 
-                {
-                    'type': 'geojson',
-                    'data': {
-                        'type': 'Feature',
-                        'properties': {},
-                        'geometry': {
-                        'type': 'LineString',
-                        'coordinates': mapState.paths[i][0]
+            if (mapState.paths) {
+                for (let i = 0; i < mapState.paths.length; i++) {
+                    map.current.addSource(i.toString(), 
+                    {
+                        'type': 'geojson',
+                        'data': {
+                            'type': 'Feature',
+                            'properties': {},
+                            'geometry': {
+                            'type': 'LineString',
+                            'coordinates': mapState.paths[i][0]
+                            }
                         }
-                    }
-                });
-                map.current.addLayer({
-                    'id': i.toString(),
-                    'type': 'line',
-                    'source': i.toString(),
-                    'layout': {
-                        'line-join': 'round',
-                        'line-cap': 'round'
-                    },
-                    'paint': {
-                        'line-color': mapState.paths[i][1],
-                        'line-width': 8
-                    }
-                });
+                    });
+                    map.current.addLayer({
+                        'id': i.toString(),
+                        'type': 'line',
+                        'source': i.toString(),
+                        'layout': {
+                            'line-join': 'round',
+                            'line-cap': 'round'
+                        },
+                        'paint': {
+                            'line-color': mapState.paths[i][1],
+                            'line-width': 8
+                        }
+                    });
+                }
             }
+            
             let bbox = mapState.getBoundingBox()
             if (bbox) {
                 map.current.fitBounds(bbox, {padding: 60});
@@ -56,6 +62,7 @@ export default function MapBox({ height, width, mapState }) {
                 map.current.setCenter([144.946457, -37.840935]);
                 map.current.setZoom(9);
             }
+            
             setCurrentMapState(mapState);
         }
     }
@@ -77,7 +84,7 @@ export default function MapBox({ height, width, mapState }) {
     });
 
     React.useEffect(() => {
-        if (mapReady) {
+        if (mapReady && mapState instanceof MapState) {
             updateMap();   
         }
         if (mapState && mapState.controls) {
