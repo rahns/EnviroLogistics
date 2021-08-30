@@ -18,7 +18,7 @@
     "distinct-colors": "^3.0.0",
     "firebase": "^8.9.0",
     "mapbox": "^1.0.0-beta10",
-    "mapbox-gl": "^2.4.0",
+    "mapbox-gl": "^2.4.1",
     "react": "^17.0.2",
     "react-awesome-modal": "^2.0.5",
     "react-beautiful-dnd": "^13.1.0",

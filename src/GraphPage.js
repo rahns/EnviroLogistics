@@ -5,6 +5,7 @@ import { database } from './App';
 import React from 'react';
 import {Button, Card, Typography, CardContent, CardActions, Divider} from "@material-ui/core";
 
+
 export default function Graph(props) {
   const [allTripsList, setAllTrips] = React.useState([]);
   React.useEffect(() =>
@@ -25,8 +26,12 @@ export default function Graph(props) {
   }), [])
   const a = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const data = []
+  const yearly = []
   for (let i = 0; i < allTripsList.length; i++) {
     data.push({name: a[allTripsList[i].date.getMonth()] + " " +allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
+  }
+  for (let i = 0; i < allTripsList.length; i++) {
+    yearly.push({name: allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
   }
   var maximum = 0
   var minimum = Number.POSITIVE_INFINITY
@@ -72,7 +77,7 @@ export default function Graph(props) {
               }}
               color="textSecondary"
             >
-              Good job keeping your gas emission median this low, to improve you could try .....
+              Good job keeping your gas emission average this low, to improve you could try .....
             </Typography>
             <Typography style = {{fontsize:25}}>
               Min: {minimum}
@@ -127,6 +132,14 @@ export default function Graph(props) {
                 
               />
             </LineChart>
+            <Button variant = "contained" color = "secondary" style = {{marginLeft: 50, marginTop:100}}
+            onClick={() => props.pageUpdater(<Graph pageUpdater={props.pageUpdater} user = {props.user}/>)}>
+            Yearly Graph
+            </Button>
+            <Button variant = "contained" color = "secondary" style = {{marginLeft: 50, marginTop:100}}
+            onClick={() => props.pageUpdater(<Graph pageUpdater={props.pageUpdater} user = {props.user}/>)}>
+            Monthly Graph
+            </Button>
         
             
             </div>
