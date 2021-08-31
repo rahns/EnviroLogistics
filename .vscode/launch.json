@@ -5,7 +5,8 @@
             "name": "React - Chrome",
             "request": "launch",
             "url": "http://localhost:3000/",
-            "port": 12345
+            "port": 12345,
+            "preLaunchTask": "npm: debug"
         }
     ]
 }
