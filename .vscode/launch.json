@@ -6,7 +6,7 @@
             "request": "launch",
             "url": "http://localhost:3000/",
             "port": 12345,
-            "preLaunchTask": "npm: debug"
+            "preLaunchTask": "npm: start-no-new-tab"
         }
     ]
 }
