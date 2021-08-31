@@ -168,9 +168,6 @@ export default function Trips(props) {
         <div className="divBox">
           <Button onClick={() => database.ref('trips/' + props.user.uid + '/').remove() }>Delete All Trips</Button>
         </div>
-        <div className="divBox">
-          <Button onClick={() => setModalOpen(true) }>Open Modal</Button>
-        </div>
     </div>
   </>
   );

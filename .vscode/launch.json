@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "pwa-chrome",
+            "name": "React - Chrome",
+            "request": "launch",
+            "url": "http://localhost:3000/",
+            "port": 12345
+        }
+    ]
+}
