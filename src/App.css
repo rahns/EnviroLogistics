@@ -153,12 +153,3 @@
 }
 
 .marker b {transform: rotateZ(135deg)}
-
-.mapboxgl-popup {
-  max-width: 200px;
-}
-
-.mapboxgl-popup-content {
-  text-align: center;
-  font-family: 'Open Sans', sans-serif;
-}
