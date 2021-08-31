@@ -8,6 +8,7 @@ import {Button, Card, Typography, CardContent, CardActions, Divider} from "@mate
 
 export default function Graph(props) {
   const [allTripsList, setAllTrips] = React.useState([]);
+  const [data, setData] = React.useState([])
   React.useEffect(() =>
   database.ref("trips/" + props.user.uid).on("value", snapshot => {
     let allTrips = [];
@@ -25,10 +26,10 @@ export default function Graph(props) {
 
   }), [])
   const a = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const data = []
   const yearly = []
+  const monthly = []
   for (let i = 0; i < allTripsList.length; i++) {
-    data.push({name: a[allTripsList[i].date.getMonth()] + " " +allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
+    monthly.push({name: a[allTripsList[i].date.getMonth()] + " " +allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
   }
   for (let i = 0; i < allTripsList.length; i++) {
     yearly.push({name: allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
@@ -133,11 +134,11 @@ export default function Graph(props) {
               />
             </LineChart>
             <Button variant = "contained" color = "secondary" style = {{marginLeft: 50, marginTop:100}}
-            onClick={() => props.pageUpdater(<Graph pageUpdater={props.pageUpdater} user = {props.user}/>)}>
+            onClick={() => setData(yearly)}>
             Yearly Graph
             </Button>
             <Button variant = "contained" color = "secondary" style = {{marginLeft: 50, marginTop:100}}
-            onClick={() => props.pageUpdater(<Graph pageUpdater={props.pageUpdater} user = {props.user}/>)}>
+            onClick={() => setData(monthly)}>
             Monthly Graph
             </Button>
         
