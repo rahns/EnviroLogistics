@@ -64,7 +64,7 @@
     "start": "react-scripts start",
     "start-native": "concurrently \"set BROWSER=none && npm start\" \"wait-on http://localhost:3000 && electron .\"",
     "build": "react-scripts build",
-    "build-native": "electron-builder -c.extraMetadata.main='build/electron.js' --win",
+    "build-native": "electron-builder -c.extraMetadata.main='build/electron.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start-no-new-tab": "set BROWSER=none && react-scripts start",
