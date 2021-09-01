@@ -1,149 +1,170 @@
 import './App.css';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Trip } from './Classes';
 import { database } from './App';
 import React from 'react';
-import {Button, Card, Typography, CardContent, CardActions, Divider} from "@material-ui/core";
+import { Card, Typography, CardContent, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 
 
 export default function Graph(props) {
-  const [allTripsList, setAllTrips] = React.useState([]);
-  const [data, setData] = React.useState([])
+  const [data, setData] = React.useState([]);
+  const [monthly, setMonthly] = React.useState([]);
+  const [yearly, setYearly] = React.useState([]);
+  const [maximum, setMaximum] = React.useState(0);
+  const [minimum, setMinimum] = React.useState(Number.POSITIVE_INFINITY);
+  const [average, setAverage] = React.useState(0);
+  const [graphPeriod, setPeriod] = React.useState(0);
+
+  React.useEffect(() => {
+    switch (graphPeriod) {
+      case 0:
+        setData(monthly);
+        break
+      case 1:
+        setData(yearly);
+        break
+      default:
+        break;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphPeriod])
+
   React.useEffect(() =>
-  database.ref("trips/" + props.user.uid).on("value", snapshot => {
-    let allTrips = [];
-    
-    if (snapshot) {
-      snapshot.forEach(snap => {
-        let i = new Trip(); 
-        i.objectToInstance(JSON.parse(snap.val().data), snap.key);
-        allTrips.push(i);
+    database.ref("trips/" + props.user.uid).on("value", snapshot => {
+      let allTrips = [];
+
+      if (snapshot) {
+        snapshot.forEach(snap => {
+          let i = new Trip();
+          i.objectToInstance(JSON.parse(snap.val().data), snap.key);
+          allTrips.push(i);
         }
-      );
-    }
-    setAllTrips(allTrips);
-   
+        );
+      }
 
-  }), [])
-  const a = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const yearly = []
-  const monthly = []
-  for (let i = 0; i < allTripsList.length; i++) {
-    monthly.push({name: a[allTripsList[i].date.getMonth()] + " " +allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
-  }
-  for (let i = 0; i < allTripsList.length; i++) {
-    yearly.push({name: allTripsList[i].date.getFullYear(), Gas:  allTripsList[i].emissions})
-  }
-  var maximum = 0
-  var minimum = Number.POSITIVE_INFINITY
-  var average = 0
-  for (let i = 0; i < allTripsList.length; i++) {
-    if (allTripsList[i].emissions < minimum) {
-      minimum = allTripsList[i].emissions
-    }
-    if (allTripsList[i].emissions > maximum){
-      maximum = allTripsList[i].emissions
-    }
-    average += allTripsList[i].emissions
-  }
-  average /= allTripsList.length
+      const a = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const yearly = []
+      const monthly = []
+      for (let i = 0; i < allTrips.length; i++) {
+        monthly.push({ name: a[allTrips[i].date.getMonth()] + " " + allTrips[i].date.getFullYear(), Gas: allTrips[i].emissions })
+      }
+      for (let i = 0; i < allTrips.length; i++) {
+        yearly.push({ name: allTrips[i].date.getFullYear(), Gas: allTrips[i].emissions })
+      }
 
-        return  (
-        <div className = "divBox">
-        <Card
-          style={{
-            width: 1800,
-            height: 300,
-            backgroundColor: "#89CFF0",
-            //marginLeft: 500,
-          }}
-        >
-          <CardContent>
+      let avg = 0;
+      for (let i = 0; i < allTrips.length; i++) {
+        if (allTrips[i].emissions < minimum) {
+          setMinimum(allTrips[i].emissions)
+        }
+        if (allTrips[i].emissions > maximum) {
+          setMaximum(allTrips[i].emissions)
+        }
+        avg += allTrips[i].emissions
+      }
+      setAverage(avg / allTrips.length);
+      setMonthly(monthly)
+      setYearly(yearly)
+      setData(monthly) // Default to monthly graph
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }), [])
 
-            <Typography
-              style={{ fontSize: 30 }}
-              color="black"
-              gutterBottom
-            >
-              The following contains information on your report
-            </Typography>
+  return (
+    <>
+      <div className="row">
+        <div className="divBox" style={{ width: "100%", padding: 20 }}>
+          <Card
+            style={{
+              backgroundColor: "#89CFF0"
+            }}
+          >
+            <CardContent>
 
-            <Typography style = {{fontsize: 25}}>
-              Average: {average}
-            </Typography>
+              <Typography
+                style={{ fontSize: 30 }}
+                color="black"
+                gutterBottom
+              >
+                The following contains information on your report
+              </Typography>
 
-            <Typography
-              style={{
-                marginBottom: 12,
-              }}
-              color="textSecondary"
-            >
-              Good job keeping your gas emission average this low, to improve you could try .....
-            </Typography>
-            <Typography style = {{fontsize:25}}>
-              Min: {minimum}
-            </Typography>
-            <Typography
-              style={{
-                marginBottom: 16,
-              }}
-              color="textSecondary"
-            >
-              Great work achieving this minimum! 
-            </Typography>
-            <Typography style = {{fontsize: 25}}>
-              Max: {maximum}
-            </Typography>
-            <Typography
-              style={{
-                marginBottom: 16,
-              }}
-              color="textSecondary"
-            >
-              Great work achieving this maximum! 
-            </Typography>
-          </CardContent>
-          
-        </Card>
-          <h3>Analysis Graph</h3>
-          <h4 style = {{marginLeft: 100}}>x = month, y = co2 emissions</h4>
-        
+              <Typography style={{ fontsize: 25 }}>
+                Average: {average}
+              </Typography>
+
+              <Typography
+                style={{
+                  marginBottom: 12,
+                }}
+                color="textSecondary"
+              >
+                Good job keeping your gas emission average this low, to improve you could try .....
+              </Typography>
+              <Typography style={{ fontsize: 25 }}>
+                Min: {minimum}
+              </Typography>
+              <Typography
+                style={{
+                  marginBottom: 16,
+                }}
+                color="textSecondary"
+              >
+                Great work achieving this minimum!
+              </Typography>
+              <Typography style={{ fontsize: 25 }}>
+                Max: {maximum}
+              </Typography>
+              <Typography
+                style={{
+                  marginBottom: 16,
+                }}
+                color="textSecondary"
+              >
+                Great work achieving this maximum!
+              </Typography>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="divBox" style={{ width: "100%", padding: 20 }}>
+          <h3 style={{ marginTop: 0 }}>Emissions Graph</h3>
+          <div style={{marginBottom: 10}}>
+            <FormControl variant="outlined" style={{minWidth: "15%"}}>
+              <InputLabel>Period</InputLabel>
+              <Select
+                value={graphPeriod}
+                onChange={(e) => setPeriod(e.target.value)}
+                label="Period"
+              >
+                <MenuItem value={0}>Monthly</MenuItem>
+                <MenuItem value={1}>Yearly</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          <ResponsiveContainer width="100%" height={500}>
             <LineChart
-              width={1800}
-              height={600}
               data={data}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5
-              }}
-            
-            >
-              <CartesianGrid strokeDasharray= "3 3" />
-              <XAxis dataKey="name" />
+              margin={{ bottom: 15, right: 50, top: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" dy={10} />
               <YAxis />
               <Tooltip />
-              <Legend />
               <Line
                 type="monotone"
                 dataKey="Gas"
+                name="CO2 emitted"
+                unit="kg"
                 stroke="green"
                 activeDot={{ r: 8 }}
-                
+
               />
             </LineChart>
-            <Button variant = "contained" color = "secondary" style = {{marginLeft: 50, marginTop:100}}
-            onClick={() => setData(yearly)}>
-            Yearly Graph
-            </Button>
-            <Button variant = "contained" color = "secondary" style = {{marginLeft: 50, marginTop:100}}
-            onClick={() => setData(monthly)}>
-            Monthly Graph
-            </Button>
-        
-            
-            </div>
-          );
-    
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </>
+  );
+
 }
