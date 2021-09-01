@@ -198,6 +198,7 @@ export class Trip {
 
 const hilux = new Vehicle("Toyota", "Hilux", "2002", true, 13, "ABC123");
 const mazdasix = new Vehicle("Mazda", "6", "2012", true, 10, "KJC836");
+const captiva = new Vehicle("Holden", "Captiva", "2006", true, 11, "XBE293")
 // Example locations
 const depot = new Location(-37.871011482016286, 145.02958519226144, "Depot");
 const coles = new Location(-37.88547095750236, 145.08436342596195, "Coles");
@@ -221,13 +222,13 @@ export function getExampleLocationsNoDepot() {
 }
 
 export function getExampleOptimisedTrip() {
-  return optimise(new Date('8/20/2021'), [hilux, mazdasix], [coles, woolworths], depot, "Example optimised trip; 2 vehicles available, 2 delivery jobs, close range");
+  return optimise(new Date('8/20/2021'), [hilux, mazdasix, captiva], [coles, woolworths], depot, "Example optimised trip; 3 vehicles available, 2 delivery jobs, close-range");
 }
 
 export function getExampleOptimisedTrip2() {
-  return optimise(new Date('8/2/2029'), [hilux, mazdasix], [coles, woolworths, monash, gmhbastadium, melbournecentral, mcg, operahouse], depot, "Example optimised trip; 2 vehicles available, 7 delivery jobs, long range delivery");
+  return optimise(new Date('8/2/2029'), [hilux, mazdasix, captiva], [coles, woolworths, monash, gmhbastadium, melbournecentral, mcg, operahouse], depot, "Example optimised trip; 3 vehicles available, 7 delivery jobs, long-range");
 }
 
 export function getExampleOptimisedTrip3() {
-  return optimise(new Date('8/3/2021'), [hilux, mazdasix], [coles, woolworths, monash, melbournecentral, mcg], depot, "Example optimised trip; 2 vehicles available, 5 delivery jobs, mid-range");
+  return optimise(new Date('8/3/2021'), [hilux, mazdasix, captiva], [coles, woolworths, monash, melbournecentral, mcg], depot, "Example optimised trip; 3 vehicles available, 5 delivery jobs, mid-range");
 }

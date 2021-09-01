@@ -71,10 +71,14 @@ export default function Trips(props) {
   }), [])
 
   const addTestTrips = () => {
+    const errorHandler = (error) => {
+      console.log(error);
+      alert("There was an error retrieving the navigation data. Check your internet connection and try again.\n" + error);
+    }
     // Test the trip optimiser
-    getExampleOptimisedTrip().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) });
-    getExampleOptimisedTrip2().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) });
-    getExampleOptimisedTrip3().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) });
+    getExampleOptimisedTrip().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
+    getExampleOptimisedTrip2().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
+    getExampleOptimisedTrip3().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
     alert("Takes about 10 seconds to add all 3")
   }
   
@@ -163,7 +167,7 @@ export default function Trips(props) {
       <div className='row'><div className="divBox"><Typography variant='subtitle1'><b>Buttons for Testing:</b></Typography></div></div>
       <div className="row">
         <div className="divBox">
-          <Button onClick={() => addTestTrips()}>Add Some Optimised Test Trips</Button>
+          <Button onClick={() => addTestTrips()}>Add 3 Optimised Test Trips</Button>
         </div>
         <div className="divBox">
           <Button onClick={() => database.ref('trips/' + props.user.uid + '/').remove() }>Delete All Trips</Button>

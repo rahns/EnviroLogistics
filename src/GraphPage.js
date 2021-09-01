@@ -155,7 +155,7 @@ export default function Graph(props) {
                 type="monotone"
                 dataKey="Gas"
                 name="CO2 emitted"
-                unit="kg"
+                unit="g"
                 stroke="green"
                 activeDot={{ r: 8 }}
 

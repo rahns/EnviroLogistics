@@ -29,6 +29,11 @@ export async function optimise(tripDate, vehicleList, locationList, depotLocatio
             ],
             [
                 {
+                    "type": "minimize-duration"
+                }
+            ],
+            [
+                {
                     "type": "minimize-cost"
                 }
             ]
