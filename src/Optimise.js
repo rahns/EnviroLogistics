@@ -40,6 +40,12 @@ export async function optimise(tripDate, vehicleList, locationList, depotLocatio
         ]
     };
 
+    const config = {
+        "termination": {
+             "maxTime": 30,
+        }
+    };
+
     console.log(problemObj)
 
     // Initialise and call solver:
@@ -47,7 +53,7 @@ export async function optimise(tripDate, vehicleList, locationList, depotLocatio
     let result;
     await matrix_data.then(async data => result = await responseToTrip(
             tripDate, 
-            window.solve_pragmatic(problemObj, data[1], {}), 
+            window.solve_pragmatic(problemObj, data[1], config), 
             data[0], notes)
     );
     return result;
@@ -60,10 +66,11 @@ async function getMatrices(locationList, depotLocation) {
     const bodyData = {"locations":locations,"metrics":["distance","duration"],"units":"m"};
     const response = await fetch(base_url, {
         method: 'POST',
+        mode: 'cors',
         headers: {
           'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
           'Content-Type': 'application/json',
-          'Authorization': '5b3ce3597851110001cf6248790397fb19954defb28bd62f87995b3f'
+          'Authorization': process.env.REACT_APP_OPENROUTESERVICE_API_KEY
         },
         body: JSON.stringify(bodyData)
       });
@@ -168,9 +175,9 @@ async function tourToVehicleTrip(tour, locationIndexMapping) {
 }
 
 export async function getDirections(start, end) {
-    let base_url = "https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248790397fb19954defb28bd62f87995b3f&";
+    let base_url = "https://api.openrouteservice.org/v2/directions/driving-car?api_key=" + process.env.REACT_APP_OPENROUTESERVICE_API_KEY + "&";
     let request_url = base_url + "start=" + start.long + "," + start.lat + "&end=" + end.long + "," + end.lat
-    const response = await fetch(request_url)
+    const response = await fetch(request_url, {mode: 'cors'})
 
     return response.json()
 }

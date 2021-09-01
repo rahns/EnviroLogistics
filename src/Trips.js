@@ -52,34 +52,38 @@ export default function Trips(props) {
   };
 
   React.useEffect(() =>
-  database.ref("trips/" + props.user.uid).on("value", snapshot => {
-    let allTrips = [];
-    if (snapshot) {
-      snapshot.forEach(snap => {
-        let i = new Trip(); 
-        i.objectToInstance(JSON.parse(snap.val().data), snap.key);
-        allTrips.push(i);
-        }
-      );
-    }
-    setAllTrips(allTrips);
-    setTrips(filterTrips(filter, allTrips, currentTripsList));
-    setFilter([filter[0], false]);
-    setExpanded(false);
-    setStillLoading(false);
+    database.ref("trips/" + props.user.uid).on("value", snapshot => {
+      let allTrips = [];
+      if (snapshot) {
+        snapshot.forEach(snap => {
+          try {
+            let i = new Trip(); 
+            i.objectToInstance(JSON.parse(snap.val().data), snap.key);
+            allTrips.push(i);
+          }
+          catch (e){
+            if (!(e instanceof ReferenceError)) throw e;
+          }
+        });
+      }
+      setAllTrips(allTrips);
+      setTrips(filterTrips(filter, allTrips, currentTripsList));
+      setFilter([filter[0], false]);
+      setExpanded(false);
+      setStillLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [])
 
   const addTestTrips = () => {
     const errorHandler = (error) => {
       console.log(error);
-      alert("There was an error retrieving the navigation data. Check your internet connection and try again.\n" + error);
+      alert("There was an error retrieving the navigation data. Either your are offline or have made too many requests in a short period. Check your internet connection and try again in a few minutes.\n" + error);
     }
     // Test the trip optimiser
     getExampleOptimisedTrip().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
     getExampleOptimisedTrip2().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
     getExampleOptimisedTrip3().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
-    alert("Takes about 10 seconds to add all 3")
+    alert("Takes about 90 seconds to add all 3 (30 seconds per trip)")
   }
   
   allTripsList.sort((a, b) => new Date(b.date) - new Date(a.date));
