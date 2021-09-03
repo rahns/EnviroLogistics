@@ -89,7 +89,7 @@
     ]
   },
   "build": {
-    "appId": "com.team17.envirologistics",
+    "appId": "com.team17.EnviroLogistics",
     "productName": "EnviroLogistics",
     "win": {
       "target": ["nsis"],

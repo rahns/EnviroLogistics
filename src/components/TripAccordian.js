@@ -1,6 +1,6 @@
 import '../App.css';
 import React from 'react';
-import {ExpandMore, Event, Timer, AvTimer, Straighten, LocalShipping, Eco, Room, Map, Navigation} from '@material-ui/icons';
+import {ExpandMore, Event, Timer, AvTimer, Straighten, LocalShipping, Eco, Room, Map, Navigation, Store} from '@material-ui/icons';
 import {Button, Accordion, AccordionActions, AccordionDetails, AccordionSummary, Divider, 
   Typography, Chip, Tooltip, Dialog, DialogTitle, DialogActions} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
@@ -55,6 +55,7 @@ export default function TripAccordian(props) {
               <Tooltip title="Consecutive Duration"><Chip icon={<Timer />} label={"Duration: " + (trip.consecutiveDuration < 121 ? trip.consecutiveDuration + " minutes" : Math.round((trip.consecutiveDuration/60) * 10) / 10 + " hours")}/></Tooltip>
               <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Aggregate: " + (trip.consecutiveDuration < 121 ? trip.totalDuration + " minutes" : Math.round((trip.totalDuration/60) * 10) / 10 + " hours")} /></Tooltip>
               <Tooltip title="Total Distance"><Chip icon={<Straighten />} label={trip.distance + "km"} /></Tooltip>
+              <Tooltip title="Depot"><Chip icon={<Store />} label={trip.depot.nickname} /></Tooltip>
               <Tooltip title="Number of Vehicles Used"><Chip icon={<LocalShipping />} label={trip.vehicleTrips.length + " vehicle" + (trip.vehicleTrips.length === 1 ? "" : "s")} /></Tooltip>
               <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={trip.emissions < 1000 ? trip.emissions + "g of CO2" : Math.round((trip.emissions/1000) * 10) / 10 + "kgs of CO2"} /></Tooltip>
             </div>

@@ -8,7 +8,6 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
-// const path = require('path');
 require('url');
 const isDev = require('electron-is-dev');
 
@@ -30,7 +29,7 @@ function createWindow() {
             }
         }
     );
-    mainWindow.loadURL(isDev ? 'http://localhost:3000' : 'http://localhost:3007'); //isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
+    mainWindow.loadURL(isDev ? 'http://localhost:3000' : 'http://localhost:3007');
     mainWindow.on('closed', () => mainWindow = null);
 }
 

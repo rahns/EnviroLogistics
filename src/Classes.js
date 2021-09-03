@@ -100,6 +100,7 @@ export class VehicleTrip {
         [accumulator[0] + currentTripLeg.distance, accumulator[1] + currentTripLeg.duration], [0, 0]
     );
     this.vehicleEmissions = vehicle.avgEmissionsPerKm * this.vehicleDistance;
+    this.depot = tripLegs[0].startLocation;
   }
 
   getMapState(colour, excludeDepotMarker) {
@@ -167,6 +168,7 @@ export class Trip {
           ],
         [0, 0, 0, 0]
       );
+      this.depot = vehicleTrips[0].depot;
     }
   }
 
@@ -183,6 +185,7 @@ export class Trip {
     this.dbKey = dbKey;
     this.notes = obj.notes;
     this.consecutiveDuration = obj.consecutiveDuration;
+    this.depot = obj.depot;
     this.date = new Date(Date.parse(obj.date));
     this.distance = obj.distance;
     this.emissions = obj.emissions;
@@ -200,7 +203,7 @@ const hilux = new Vehicle("Toyota", "Hilux", "2002", true, 13, "ABC123");
 const mazdasix = new Vehicle("Mazda", "6", "2012", true, 10, "KJC836");
 const captiva = new Vehicle("Holden", "Captiva", "2006", true, 11, "XBE293")
 // Example locations
-const depot = new Location(-37.871011482016286, 145.02958519226144, "Depot");
+const depot = new Location(-37.871011482016286, 145.02958519226144, "AusPost Caulfield");
 const coles = new Location(-37.88547095750236, 145.08436342596195, "Coles");
 const woolworths = new Location(-37.94903921470658, 145.0406876435942, "Woolworths");
 const monash = new Location(-37.91430871112805, 145.1349541627051, "Monash University");
