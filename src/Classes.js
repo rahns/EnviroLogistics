@@ -210,10 +210,10 @@ const mcg = new Location(-37.81989845691743, 144.98336346301312, "Melbourne Cric
 const operahouse = new Location(-33.85678377807042, 151.21533961793205, "Sydney Opera House");
 
 const carList = [];
-export function getExampleCars() {
-  for(let i = 0; i < data["21"].length; i=i+1000) {
+function createInitialVehicles() {
+  for(let i = 0; i < data["21"].length; i=i+20) {
     const make = data["21"][i]["Mfr Name"];
-    const model = data["21"][i]["Division"]
+    const model = data["21"][i]["Car Line"]
     const year = data["21"][i]["Model Year"]
     var autoTransmission;
     if (data["21"][i]["Trans"] === "A"|data["21"][i]["Trans"] === "SA") {
@@ -225,7 +225,10 @@ export function getExampleCars() {
     const avgEmissionsPerKm = data["21"][i]["Comb CO2 Rounded Adjusted (as shown on FE Label)"]
     carList.push(new Vehicle(make, model, year, autoTransmission, avgEmissionsPerKm))
   }
-  console.log(1);
+}
+createInitialVehicles();
+
+export function getExampleCars() {
   return carList;
 }
 

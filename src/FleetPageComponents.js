@@ -47,11 +47,12 @@ export default function VehicleCard(props) {
                 <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 5}}>
                 <Chip variant="outlined" color='primary' icon={<LocalShipping />}
                     label ={<Typography variant="h5" style={{margin: "auto"}}>
-                        {make + " " + model}
+                        {model}
                     </Typography>}
                     />
                 </div>
                 <div className="row">
+                    <Tooltip title="Manufacter"><Chip label={make}/></Tooltip>
                     <Tooltip title="Manufactored Year"><Chip icon={<Build />} label={year}/></Tooltip>
                     <Tooltip title="Auto Transmission?"><Chip  label={autoTransmission.toString()}/></Tooltip>
                     <Tooltip title="Avg Emissions"><Chip icon={<Eco />} label={avgEmissions + " grams of CO2/km"}/></Tooltip>
