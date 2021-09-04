@@ -43,13 +43,36 @@ export default function Graph(props) {
       }
 
       const a = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+     
       const yearly = []
       const monthly = []
       for (let i = 0; i < allTrips.length; i++) {
-        monthly.push({ name: a[allTrips[i].date.getMonth()] + " " + allTrips[i].date.getFullYear(), Gas: allTrips[i].emissions })
+        let found = false;
+        for (let j = 0; j < monthly.length; j++){
+          if (monthly[j]["name"] == a[allTrips[i].date.getMonth()] + " " + allTrips[i].date.getFullYear()){
+              monthly[j]["Gas"] += allTrips[i].emissions;
+              found = true
+              break;
+          }
+        }
+        if (found == false){
+          monthly.push({ name: a[allTrips[i].date.getMonth()] + " " + allTrips[i].date.getFullYear(), Gas: allTrips[i].emissions })
+        }
+        
       }
       for (let i = 0; i < allTrips.length; i++) {
-        yearly.push({ name: allTrips[i].date.getFullYear(), Gas: allTrips[i].emissions })
+        let foundd = false;
+        for (let j = 0; j< yearly.length; j++){
+          if (yearly[j]["name"] == allTrips[i].date.getFullYear()){
+            yearly[j]["Gas"] += allTrips[i].emissions;
+            foundd = true;
+            break
+          }
+        }
+        if (foundd == false){
+          yearly.push({ name: allTrips[i].date.getFullYear(), Gas: allTrips[i].emissions })
+        }
+        
       }
 
       let avg = 0;
