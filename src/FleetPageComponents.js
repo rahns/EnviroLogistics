@@ -21,7 +21,6 @@ export default function VehicleCard(props) {
     const model = props.vehicle.model;
     const year = props.vehicle.year;
     const avgEmissions = props.vehicle.avgEmissionsPerKm;
-    const rego = props.vehicle.rego;
     var autoTransmission;
     if (props.vehicle.autoTransmission){
         autoTransmission = "Auto";
@@ -56,7 +55,6 @@ export default function VehicleCard(props) {
                     <Tooltip title="Manufactored Year"><Chip icon={<Build />} label={year}/></Tooltip>
                     <Tooltip title="Auto Transmission?"><Chip  label={autoTransmission.toString()}/></Tooltip>
                     <Tooltip title="Avg Emissions"><Chip icon={<Eco />} label={avgEmissions + " grams of CO2/km"}/></Tooltip>
-                    <Tooltip title="Registration"><Chip icon={<HowToReg />} label={rego}/></Tooltip>
                 </div>
             </CardContent>
             <Divider />

@@ -42,9 +42,8 @@ export default function Fleet(props) {
     const model = document.getElementById("newVehicleModel").value;
     const year = document.getElementById("newVehicleYear").value;
     const avgEmissions = document.getElementById("newVehicleEmissions").value;
-    const rego = document.getElementById("newVehicleRego").value;
-    const transmission = document.getElementById("newVehicleTransmission").getAttribute("value") == 1 ? true : false;
-    let newVehicle = new Vehicle(make, model, year, transmission, avgEmissions, rego);
+    const transmission = document.getElementById("newVehicleTransmission").getAttribute("value") === 1 ? true : false;
+    let newVehicle = new Vehicle(make, model, year, transmission, avgEmissions);
     props.addToDatabase('vehicles/', JSON.stringify(newVehicle));
   }
 
@@ -55,7 +54,7 @@ export default function Fleet(props) {
       snapshot.forEach(snap => {
         let i = new Vehicle(); 
         i.objectToInstance(JSON.parse(snap.val().data), snap.key);
-        allVehicles.push(i);
+        allVehicles.push(i); 
         }
       );
     }
@@ -131,7 +130,6 @@ export default function Fleet(props) {
                     <TextField id="newVehicleModel" label="Model" action="/" method="get" InputProps={{shrink: true}} variant="filled" style={{minWidth: "40%", fontSize: "16px", marginBottom: 10}}></TextField>
                     <TextField id="newVehicleYear" label="Manufactored Year" type="number" min="2000" max="2021" action="/" method="get" InputProps={{shrink: true}} variant="filled" style={{minWidth: "40%", fontSize: "16px", marginBottom: 10}}></TextField>
                     <TextField id="newVehicleEmissions" label="Average Emissions" type="number" action="/" method="get" InputProps={{endAdornment: <InputAdornment position="end">Grams of CO2/Km</InputAdornment>, shrink: true}} variant="filled" style={{minWidth: "40%", fontSize: "16px", marginBottom: 10}}></TextField>
-                    <TextField id="newVehicleRego" label="Registration" action="/" method="get" InputProps={{shrink: true}} variant="filled" style={{minWidth: "40%", fontSize: "16px", marginBottom: 10}}></TextField>
                     <TextField id="newVehicleTransmission" label="Transmissions" select value={transmission} onChange={handleTransmissionSelect} variant="filled" style={{minWidth: "40%", fontSize: "16px", marginBottom: 10}}>
                       <MenuItem value={0}>Manual</MenuItem>
                       <MenuItem value={1}>Auto</MenuItem>

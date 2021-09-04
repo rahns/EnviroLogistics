@@ -2,6 +2,8 @@ import { optimise } from "./Optimise";
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import distinctColors from 'distinct-colors'
 import './App.css';
+import data from './data/vehicles.json';
+
 
 export class Vehicle {
   constructor(make, model, year, autoTransmission, avgEmissionsPerKm, rego) {
@@ -10,11 +12,10 @@ export class Vehicle {
     this.year = year;
     this.autoTransmission = autoTransmission;
     this.avgEmissionsPerKm = avgEmissionsPerKm;
-    this.rego = rego;
   }
 
   toString() {
-    return this.rego + " - " + this.make + " " + this.model + " " + this.year;
+    return this.make + " " + this.model + " " + this.year;
   }
 
   objectToInstance(obj, dbKey) {
@@ -24,7 +25,6 @@ export class Vehicle {
     this.year = obj.year;
     this.autoTransmission = obj.autoTransmission;
     this.avgEmissionsPerKm = obj.avgEmissionsPerKm;
-    this.rego = obj.rego;
   }
 };
 
@@ -199,9 +199,6 @@ export class Trip {
   }
 };
 
-const hilux = new Vehicle("Toyota", "Hilux", "2002", true, 13, "ABC123");
-const mazdasix = new Vehicle("Mazda", "6", "2012", true, 10, "KJC836");
-const captiva = new Vehicle("Holden", "Captiva", "2006", true, 11, "XBE293")
 // Example locations
 const depot = new Location(-37.871011482016286, 145.02958519226144, "AusPost Caulfield");
 const coles = new Location(-37.88547095750236, 145.08436342596195, "Coles");
@@ -212,8 +209,24 @@ const melbournecentral = new Location(-37.8101676448892, 144.96272227875326, "Me
 const mcg = new Location(-37.81989845691743, 144.98336346301312, "Melbourne Cricket Ground");
 const operahouse = new Location(-33.85678377807042, 151.21533961793205, "Sydney Opera House");
 
+const carList = [];
 export function getExampleCars() {
-  return [hilux, mazdasix];
+  for(let i = 0; i < data["21"].length; i=i+1000) {
+    const make = data["21"][i]["Mfr Name"];
+    const model = data["21"][i]["Division"]
+    const year = data["21"][i]["Model Year"]
+    var autoTransmission;
+    if (data["21"][i]["Trans"] === "A"|data["21"][i]["Trans"] === "SA") {
+      autoTransmission = true;
+    }
+    else {
+      autoTransmission = false;
+    }
+    const avgEmissionsPerKm = data["21"][i]["Comb CO2 Rounded Adjusted (as shown on FE Label)"]
+    carList.push(new Vehicle(make, model, year, autoTransmission, avgEmissionsPerKm))
+  }
+  console.log(1);
+  return carList;
 }
 
 export function getExampleLocations() {
@@ -225,13 +238,13 @@ export function getExampleLocationsNoDepot() {
 }
 
 export function getExampleOptimisedTrip() {
-  return optimise(new Date('8/20/2021'), [hilux, mazdasix, captiva], [coles, woolworths], depot, "Example optimised trip; 3 vehicles available, 2 delivery jobs, close-range");
+  return optimise(new Date('8/20/2021'), carList, [coles, woolworths], depot, "Example optimised trip; 3 vehicles available, 2 delivery jobs, close-range");
 }
 
 export function getExampleOptimisedTrip2() {
-  return optimise(new Date('8/2/2029'), [hilux, mazdasix, captiva], [coles, woolworths, monash, gmhbastadium, melbournecentral, mcg, operahouse], depot, "Example optimised trip; 3 vehicles available, 7 delivery jobs, long-range");
+  return optimise(new Date('8/2/2029'), carList, [coles, woolworths, monash, gmhbastadium, melbournecentral, mcg, operahouse], depot, "Example optimised trip; 3 vehicles available, 7 delivery jobs, long-range");
 }
 
 export function getExampleOptimisedTrip3() {
-  return optimise(new Date('8/3/2021'), [hilux, mazdasix, captiva], [coles, woolworths, monash, melbournecentral, mcg], depot, "Example optimised trip; 3 vehicles available, 5 delivery jobs, mid-range");
+  return optimise(new Date('8/3/2021'), carList, [coles, woolworths, monash, melbournecentral, mcg], depot, "Example optimised trip; 3 vehicles available, 5 delivery jobs, mid-range");
 }
