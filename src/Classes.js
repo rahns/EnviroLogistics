@@ -173,7 +173,7 @@ export class Trip {
   }
 
   getMapState() {
-    const colours = distinctColors({count: this.vehicleTrips.length, lightMin: 30, lightMax: 90, chromaMin: 90}).map(e => e.hex())
+    const colours = distinctColors({count: this.vehicleTrips.length, lightMin: 30, chromaMin: 50}).map(e => e.hex())
     var mapState = new MapState([], [])
     for (let i = 0; i < this.vehicleTrips.length; i++) {
       mapState.combine(this.vehicleTrips[i].getMapState(colours[i%colours.length], i === 0 ? false : true))
@@ -216,13 +216,13 @@ function createInitialVehicles() {
     const model = data["21"][i]["Carline"];
     const year = data["21"][i]["Model Year"];
     var autoTransmission;
-    if (data["21"][i]["Trans"] === "A"|data["21"][i]["Trans"] === "SA") {
+    if (data["21"][i]["Trans"] === "A"|data["21"][i]["Transmission"].includes("Auto")) {
       autoTransmission = true;
     }
     else {
       autoTransmission = false;
     }
-    const avgEmissionsPerKm = parseInt(data["21"][i]["Comb CO2 Rounded Adjusted (as shown on FE Label)"]);
+    const avgEmissionsPerKm = Math.round(parseInt(data["21"][i]["Comb CO2 Rounded Adjusted (as shown on FE Label)"])/1.6);  // convert to per km from per mile
     carList.push(new Vehicle(make, model, year, autoTransmission, avgEmissionsPerKm))
   }
 }
@@ -241,13 +241,13 @@ export function getExampleLocationsNoDepot() {
 }
 
 export function getExampleOptimisedTrip() {
-  return optimise(new Date('8/20/2021'), carList, [coles, woolworths], depot, "Example optimised trip; 3 vehicles available, 2 delivery jobs, close-range");
+  return optimise(new Date('8/20/2021'), carList, [coles, woolworths], depot, "Example optimised trip; " + carList.length + " vehicles available, 2 delivery jobs, close-range");
 }
 
 export function getExampleOptimisedTrip2() {
-  return optimise(new Date('8/2/2029'), carList, [coles, woolworths, monash, gmhbastadium, melbournecentral, mcg, operahouse], depot, "Example optimised trip; 3 vehicles available, 7 delivery jobs, long-range");
+  return optimise(new Date('8/2/2029'), carList, [coles, woolworths, monash, gmhbastadium, melbournecentral, mcg, operahouse], depot, "Example optimised trip; " + carList.length + " vehicles available, 7 delivery jobs, long-range");
 }
 
 export function getExampleOptimisedTrip3() {
-  return optimise(new Date('8/3/2021'), carList, [coles, woolworths, monash, melbournecentral, mcg], depot, "Example optimised trip; 3 vehicles available, 5 delivery jobs, mid-range");
+  return optimise(new Date('8/3/2021'), carList, [coles, woolworths, monash, melbournecentral, mcg], depot, "Example optimised trip; " + carList.length + " vehicles available, 5 delivery jobs, mid-range");
 }

@@ -6,7 +6,7 @@ import {Button, MenuItem, TextField, Typography, LinearProgress, Grow, Tooltip, 
 import {Cancel} from '@material-ui/icons';
 import TripAccordian from './components/TripAccordian';
 import { getExampleOptimisedTrip, getExampleOptimisedTrip2, getExampleOptimisedTrip3, Trip} from './Classes';
-import MapBox from './components/MapBox.js'
+import MapBox from './components/MapBox.js';
 
 function filterTrips(filter, allTripsList, currentTripsList, searchText) {
   if (searchText) {
@@ -54,17 +54,19 @@ export default function Trips(props) {
   React.useEffect(() =>
     database.ref("trips/" + props.user.uid).on("value", snapshot => {
       let allTrips = [];
-      if (snapshot) {
+      try {
+        if (snapshot) {
         snapshot.forEach(snap => {
-          try {
             let i = new Trip(); 
             i.objectToInstance(JSON.parse(snap.val().data), snap.key);
             allTrips.push(i);
-          }
-          catch (e){
-            if (!(e instanceof ReferenceError)) throw e;
-          }
-        });
+        }
+        )
+      };
+      }
+      catch (e){
+        if (!(e instanceof ReferenceError)) {throw e}
+        else {console.log("Caught:" + e)};
       }
       setAllTrips(allTrips);
       setTrips(filterTrips(filter, allTrips, currentTripsList));
@@ -72,7 +74,7 @@ export default function Trips(props) {
       setExpanded(false);
       setStillLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [])
+  }, (err) => console.log(err)), [])
 
   const addTestTrips = () => {
     const errorHandler = (error) => {
@@ -83,7 +85,7 @@ export default function Trips(props) {
     getExampleOptimisedTrip().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
     getExampleOptimisedTrip2().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
     getExampleOptimisedTrip3().then(function(trip) { props.addToDatabase('trips/', JSON.stringify(trip)); console.log(trip) }, errorHandler);
-    alert("Takes about 90 seconds to add all 3 (30 seconds per trip)")
+    alert("Takes about 30 seconds to add (10 seconds per trip)")
   }
   
   allTripsList.sort((a, b) => new Date(b.date) - new Date(a.date));

@@ -24,25 +24,24 @@ export async function optimise(tripDate, vehicleList, locationList, depotLocatio
             ],
             [
                 {
-                    "type": "maximize-tours"
-                }
-            ],
-            [
-                {
-                    "type": "minimize-duration"
-                }
-            ],
-            [
-                {
                     "type": "minimize-cost"
-                }
+                },
+                {
+                    "type": "minimize-distance"
+                },
+                {
+                    "type": "maximize-tours"
+                },
+                // {
+                //     "type": "minimize-duration"
+                // }
             ]
         ]
     };
 
     const config = {
         "termination": {
-             "maxTime": 30,
+             "maxTime": 5,
         }
     };
 
@@ -115,7 +114,8 @@ function generateVehiclesList(vehicleList) {
             profile: {
                 "matrix": "normal"
             },
-            costs: {fixed: 0, distance: i.avgEmissionsPerKm, time: 0},
+            costs: {fixed: 71000, distance: i.avgEmissionsPerKm, time: 450},
+            // costs: {fixed: 0, distance: i.avgEmissionsPerKm, time: 0},
             shifts: [{
                 start: {
                     earliest: "1900-01-01T00:00:00Z",
@@ -142,6 +142,7 @@ async function responseToTrip(date, response, locationIndexMapping, notes) {
 
     response = JSON.parse(response);
     console.log(response)
+    console.log(response.tours.length)
     let vehicleTrips = Promise.all(response.tours.map(async tour => await tourToVehicleTrip(tour, locationIndexMapping)));
 
     return new Trip(date, await vehicleTrips, notes);
