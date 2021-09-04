@@ -6,7 +6,7 @@ import data from './data/vehicles.json';
 
 
 export class Vehicle {
-  constructor(make, model, year, autoTransmission, avgEmissionsPerKm, rego) {
+  constructor(make, model, year, autoTransmission, avgEmissionsPerKm) {
     this.make = make;
     this.model = model;
     this.year = year;
@@ -213,8 +213,8 @@ const carList = [];
 function createInitialVehicles() {
   for(let i = 0; i < data["21"].length; i=i+20) {
     const make = data["21"][i]["Mfr Name"];
-    const model = data["21"][i]["Car Line"]
-    const year = data["21"][i]["Model Year"]
+    const model = data["21"][i]["Carline"];
+    const year = data["21"][i]["Model Year"];
     var autoTransmission;
     if (data["21"][i]["Trans"] === "A"|data["21"][i]["Trans"] === "SA") {
       autoTransmission = true;
@@ -222,7 +222,7 @@ function createInitialVehicles() {
     else {
       autoTransmission = false;
     }
-    const avgEmissionsPerKm = data["21"][i]["Comb CO2 Rounded Adjusted (as shown on FE Label)"]
+    const avgEmissionsPerKm = parseInt(data["21"][i]["Comb CO2 Rounded Adjusted (as shown on FE Label)"]);
     carList.push(new Vehicle(make, model, year, autoTransmission, avgEmissionsPerKm))
   }
 }

@@ -47,7 +47,7 @@ export default function VehicleCard(props) {
                 <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 5}}>
                 <Chip variant="outlined" color='primary' icon={<LocalShipping />}
                     label ={<Typography variant="h5" style={{margin: "auto"}}>
-                        {model}
+                        {make + " " + model}
                     </Typography>}
                     />
                 </div>
