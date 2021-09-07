@@ -56,6 +56,7 @@ export default function TripAccordian(props) {
               <Tooltip title="Total Individual Driving Minutes"><Chip icon={<AvTimer />} label={"Aggregate: " + (trip.consecutiveDuration < 121 ? trip.totalDuration + " minutes" : Math.round((trip.totalDuration/60) * 10) / 10 + " hours")} /></Tooltip>
               <Tooltip title="Total Distance"><Chip icon={<Straighten />} label={trip.distance + "km"} /></Tooltip>
               <Tooltip title="Depot"><Chip icon={<Store />} label={trip.depot.nickname} /></Tooltip>
+              <Tooltip title="Number of Jobs"><Chip icon={<Room />} label={trip.vehicleTrips.reduce(((acc, v) => (v.tripLegs.length-1) + acc), 0) + " jobs"} /></Tooltip>
               <Tooltip title="Number of Vehicles Used"><Chip icon={<LocalShipping />} label={trip.vehicleTrips.length + " vehicle" + (trip.vehicleTrips.length === 1 ? "" : "s")} /></Tooltip>
               <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={trip.emissions < 1000 ? trip.emissions + "g of CO2" : Math.round((trip.emissions/1000) * 10) / 10 + "kgs of CO2"} /></Tooltip>
             </div>
@@ -110,6 +111,7 @@ function VehicleAccordian(props) {
             <div className="row" style={{paddingTop: 0}}>
               <Tooltip title="Duration"><Chip icon={<Timer />} label={vehicleTrip.vehicleDuration < 121 ? vehicleTrip.vehicleDuration + " minutes" : Math.round((vehicleTrip.vehicleDuration/60) * 10) / 10 + " hours"}/></Tooltip>
               <Tooltip title="Distance"><Chip icon={<Straighten />} label={vehicleTrip.vehicleDistance + "km"} /></Tooltip>
+              <Tooltip title="Number of Jobs"><Chip icon={<Room />} label={(vehicleTrip.tripLegs.length-1) + " jobs"} /></Tooltip>
               <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>}><Chip icon={<Eco />} label={vehicleTrip.vehicleEmissions < 1000 ? vehicleTrip.vehicleEmissions + "g of CO2" : Math.round((vehicleTrip.vehicleEmissions/1000) * 10) / 10 + "kgs of CO2"} /></Tooltip>
             </div>
           </div>
