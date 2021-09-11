@@ -53,7 +53,7 @@ export default function AddTrip(props) {
           <div>
             <Grid container spacing={2}>
               <Grid item xs>
-                <CheckboxList items={locations} handleToggle={handleToggle(setLocsChecked)} checked={locsChecked} />
+                <CheckboxList items={locations} handleToggle={handleToggle(setLocsChecked)} checked={locsChecked} deletable={true} handleDelete={handleDelete(setLocations)} />
                 <TextField id="location-nickname-input" label="Nickname for Location" onChange={(e) => setlocNickname(e.target.value)} />
                 <Button variant="contained" color="secondary" onClick={() => addLocation()}>Add From Marker</Button>
               </Grid>
@@ -79,7 +79,7 @@ export default function AddTrip(props) {
                 <CheckboxList items={cars} handleToggle={handleToggle(setVehiChecked)} checked={vehiChecked} />
               </Grid>
               <Grid item xs>
-                <DragDropListOfLists />
+                {/* <DragDropListOfLists /> */}
               </Grid>
             </Grid>
           </div>
@@ -111,7 +111,6 @@ export default function AddTrip(props) {
   const [locNickname, setlocNickname] = React.useState('');
   const [locsChecked, setLocsChecked] = React.useState([]);
   const [locations, setLocations] = React.useState(getExampleLocations());
-  const [vehiChecked, setVehiChecked] = React.useState([]);
   const [geocoderResult, setGeocoderResult] = React.useState([]);
 
   const geocoder = new MapboxGeocoder({
@@ -148,6 +147,16 @@ export default function AddTrip(props) {
     updater(newChecked);
   };
 
+  const handleDelete = (updater) => (items) => (item) => () => {
+    const currentIndex = items.indexOf(item);
+    const newItems = [...items];
+
+    newItems.splice(currentIndex, 1);
+
+    console.log(newItems);
+    updater(newItems);
+  };
+
   const addLocation = () => {
     let dupeNick = false;
     let dupeLoc = false;
@@ -181,6 +190,8 @@ export default function AddTrip(props) {
 
   //vehicle page constants
   const cars = getExampleCars();
+  const [vehiChecked, setVehiChecked] = React.useState([]);
+  const [vehiLocs, setVehiLocs] = React.useState([]);
 
   //details page constants
   const [selectedDate, handleDateChange] = React.useState(new Date());

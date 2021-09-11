@@ -8,6 +8,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function CheckboxList({ items, checked, handleToggle }) {
+export default function CheckboxList({ items, checked, handleToggle, deletable, handleDelete }) {
     const classes = useStyles();
     return (
         <List className={classes.root}>
@@ -36,6 +39,12 @@ export default function CheckboxList({ items, checked, handleToggle }) {
                             />
                         </ListItemIcon>
                         <ListItemText id={labelId} primary={item.toString()} />
+                        {!(deletable == null) && !(handleDelete == null) && deletable ?
+                            <ListItemSecondaryAction>
+                                <IconButton edge="end" aria-label="delete" onClick={handleDelete(items)(item)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </ListItemSecondaryAction> : <></>}
                     </ListItem>
                 );
             })}
