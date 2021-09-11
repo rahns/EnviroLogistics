@@ -12,6 +12,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import DragDropListOfLists from './components/DnDListofLists/DnDListofLists';
 //import { database } from './App';
 
 
@@ -61,8 +62,8 @@ export default function AddTrip(props) {
               </Grid>
             </Grid>
 
-            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={ () => setSnackbar(false)}>
-              <MuiAlert elevation={6} variant="filled" severity="warning" onClose={ () => setSnackbar(false)}>
+            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbar(false)}>
+              <MuiAlert elevation={6} variant="filled" severity="warning" onClose={() => setSnackbar(false)}>
                 {errorText}
               </MuiAlert>
             </Snackbar>
@@ -73,7 +74,14 @@ export default function AddTrip(props) {
       case 1: // Vehicles
         return (
           <div className="row">
-            <CheckboxList items={cars} handleToggle={handleToggle(setVehiChecked)} checked={vehiChecked} />
+            <Grid container>
+              <Grid item xs>
+                <CheckboxList items={cars} handleToggle={handleToggle(setVehiChecked)} checked={vehiChecked} />
+              </Grid>
+              <Grid item xs>
+                <DragDropListOfLists />
+              </Grid>
+            </Grid>
           </div>
         );
 
