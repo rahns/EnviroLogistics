@@ -1,6 +1,6 @@
 // The code in this file and folder are modified from https://codesandbox.io/s/react-material-ui-drag-and-drop-trello-clone-2-lists-7q46h
 
-import React, { useState } from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { DragDropContext } from "react-beautiful-dnd";
@@ -8,38 +8,39 @@ import Column from "./Column";
 
 const useStyles = makeStyles((theme) => ({}));
 
-export default function DragDropListOfLists() {
+export default function DragDropListOfLists({ stateUpdater, state }) {
   const classes = useStyles();
+
   /*
     TODO: It's really important how you structure your data!!!
       each column has to have a unique id, each item has to have a unique id and ideally consecutive else funky things happen
       each droppable has to have a unique id, each draggable also - cannot stress this enough because that is the only way
       the framework knows how what went from which list
     */
-  const initialColumns = {
-    todo: {
-      id: "todo",
-      list: [
-        { id: "1", text: "text1" },
-        { id: "2", text: "text2" },
-        { id: "3", text: "text3" }
-      ]
-    },
-    doing: {
-      id: "doing",
-      list: [
-        { id: "4", text: "text4" },
-        { id: "5", text: "text5" },
-        { id: "6", text: "text6" }
-      ]
-    },
-    done: {
-      id: "done",
-      list: []
-    }
-  };
+  // const initialColumns = {
+  //   todo: {
+  //     id: "todo",
+  //     list: [
+  //       { id: "1", text: "text1" },
+  //       { id: "2", text: "text2" },
+  //       { id: "3", text: "text3" }
+  //     ]
+  //   },
+  //   doing: {
+  //     id: "doing",
+  //     list: [
+  //       { id: "4", text: "text4" },
+  //       { id: "5", text: "text5" },
+  //       { id: "6", text: "text6" }
+  //     ]
+  //   },
+  //   done: {
+  //     id: "done",
+  //     list: []
+  //   }
+  // };
 
-  const [columns, setColumns] = useState(initialColumns);
+
 
   const onDragEnd = ({ source, destination }) => {
     // Make sure we have a valid destination
@@ -53,8 +54,8 @@ export default function DragDropListOfLists() {
       return null;
 
     // Set start and end variables
-    const start = columns[source.droppableId];
-    const end = columns[destination.droppableId];
+    const start = state[source.droppableId];
+    const end = state[destination.droppableId];
 
     // If start is the same as end, we're in the same column
     if (start === end) {
@@ -73,7 +74,7 @@ export default function DragDropListOfLists() {
       };
 
       // Update the state
-      setColumns((state) => ({ ...state, [newCol.id]: newCol }));
+      stateUpdater((state) => ({ ...state, [newCol.id]: newCol }));
       return null;
     } else {
       // If start is different from end, we need to update multiple columns
@@ -99,7 +100,7 @@ export default function DragDropListOfLists() {
       };
 
       // Update the state
-      setColumns((state) => ({
+      stateUpdater((state) => ({
         ...state,
         [newStartCol.id]: newStartCol,
         [newEndCol.id]: newEndCol
@@ -111,8 +112,7 @@ export default function DragDropListOfLists() {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Grid container direction={"row"} justifyContent={"center"}>
-        {Object.values(columns).map((column) => {
-          console.log(column);
+        {Object.values(state).map((column) => {
           return (
             <Grid item>
               <Column column={column} key={column.id} />

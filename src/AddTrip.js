@@ -79,7 +79,7 @@ export default function AddTrip(props) {
                 <CheckboxList items={cars} handleToggle={handleToggle(setVehiChecked)} checked={vehiChecked} />
               </Grid>
               <Grid item xs>
-                {/* <DragDropListOfLists /> */}
+                <DragDropListOfLists stateUpdater={setVehiLocs} state={vehiLocs} />
               </Grid>
             </Grid>
           </div>
@@ -169,7 +169,7 @@ export default function AddTrip(props) {
       }
     });
 
-    console.log(geocoderResult);
+    //console.log(geocoderResult);
 
     if (geocoderResult.length !== 0 && locNickname !== '' && !dupeNick) {
       setLocations([new Location(geocoderResult[1], geocoderResult[0], locNickname), ...locations]);
@@ -191,7 +191,35 @@ export default function AddTrip(props) {
   //vehicle page constants
   const cars = getExampleCars();
   const [vehiChecked, setVehiChecked] = React.useState([]);
-  const [vehiLocs, setVehiLocs] = React.useState([]);
+
+  const splitToChunks = (array, parts) => {
+    let result = [];
+    for (let i = parts; i > 0; i--) {
+      result.push(array.splice(0, Math.ceil(array.length / i)));
+    }
+    return result;
+  };
+
+  const initVehiLocs = (vehicles, locs) => {
+    let chunkedLocs = splitToChunks(locs.map((loc, idx) => ({id: idx.toString(), text: loc})), vehicles.length);
+    let result = vehicles.reduce((obj, veh, idx) => {
+      return {
+        ...obj, [veh.toString()]: {
+          id: veh.toString(), vehicle: veh, list: chunkedLocs[idx]
+        }
+      }
+    }
+      , {}
+    )
+    return result;
+  };
+
+  const [vehiLocs, setVehiLocs] = React.useState(initVehiLocs(vehiChecked, locsChecked));
+
+  React.useEffect(() => {
+    setVehiLocs(initVehiLocs(vehiChecked, locsChecked));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vehiChecked, locsChecked]);
 
   //details page constants
   const [selectedDate, handleDateChange] = React.useState(new Date());
