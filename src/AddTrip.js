@@ -10,7 +10,9 @@ import { getExampleCars, getExampleLocations, Location } from './Classes';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-import { database } from './App';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+//import { database } from './App';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,6 +33,9 @@ export default function AddTrip(props) {
   const classes = useStyles();
   const steps = ['Select Waypoints', 'Assign Vehicles', 'Extra Details'];
   const [activeStep, setActiveStep] = React.useState(0);
+  // state relating to errors
+  const [snackbarOpen, setSnackbar] = React.useState(false);
+  const [errorText, setErrorText] = React.useState('');
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -47,17 +52,20 @@ export default function AddTrip(props) {
           <div>
             <Grid container spacing={2}>
               <Grid item xs>
-                <div id='locInput'>
-                  <CheckboxList items={locations} handleToggle={handleToggle(setLocsChecked)} checked={locsChecked} />
-                  <TextField id="location-nickname-input" label="Nickname for Location" onChange={(e) => setlocNickname(e.target.value)} />
-                  <Button variant="contained" color="secondary" onClick={() => addLocation()}>Add From Marker</Button>
-
-                </div>
+                <CheckboxList items={locations} handleToggle={handleToggle(setLocsChecked)} checked={locsChecked} />
+                <TextField id="location-nickname-input" label="Nickname for Location" onChange={(e) => setlocNickname(e.target.value)} />
+                <Button variant="contained" color="secondary" onClick={() => addLocation()}>Add From Marker</Button>
               </Grid>
               <Grid item xs>
                 <MapBox height="60vh" width="70vw" mapState={mapState} />
               </Grid>
             </Grid>
+
+            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={ () => setSnackbar(false)}>
+              <MuiAlert elevation={6} variant="filled" severity="warning" onClose={ () => setSnackbar(false)}>
+                {errorText}
+              </MuiAlert>
+            </Snackbar>
           </div >
 
         );
@@ -112,7 +120,7 @@ export default function AddTrip(props) {
       setGeocoderResult(result.geometry.coordinates);
     });;
 
-  const [mapState, setMapState] = React.useState({
+  const [mapState] = React.useState({
     controls: [{
       control: geocoder,
       position: "top-left"
@@ -133,16 +141,33 @@ export default function AddTrip(props) {
   };
 
   const addLocation = () => {
-    if (geocoderResult != [] && locNickname != '') {
+    let dupeNick = false;
+    let dupeLoc = false;
+    locations.forEach(function (element) {
+      if (element.nickname === locNickname) {
+        dupeNick = true;
+      }
+      if (element.lat === geocoderResult[1] && element.long === geocoderResult[0]) {
+        dupeLoc = true;
+      }
+    });
+
+    console.log(geocoderResult);
+
+    if (geocoderResult.length !== 0 && locNickname !== '' && !dupeNick) {
       setLocations([new Location(geocoderResult[1], geocoderResult[0], locNickname), ...locations]);
       console.log("added location " + locNickname + " at coordinates " + geocoderResult[1].toString() + " " + geocoderResult[0].toString())
     }
     else {
-      // <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-      //   <Alert onClose={handleClose} severity="success">
-      //     This is a success message!
-      //   </Alert>
-      // </Snackbar>
+      let errorText = 'Waypoint not added: '
+      errorText = geocoderResult.length === 0 ? errorText + 'No marker specified!'
+        : locNickname === '' ? errorText + 'No nickname given!'
+          : dupeNick ? errorText + 'Duplicate Nickname!'
+            : dupeLoc ? errorText + 'Coordinates match existing waypoint!' : errorText + 'Unknown error...'
+
+      setErrorText(errorText);
+      setSnackbar(true);
+
     }
   }
 
