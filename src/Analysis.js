@@ -99,7 +99,7 @@ export default function Analysis(props) {
     <>
       <div className="row">
         <div className="divBox" style={{ width: "100%", padding: 20}}>
-          <h3 style={{ marginTop: 0 }}>Emissions Statistics</h3>
+          <h3 style={{ marginTop: 0 }}>Statistics Dashboard</h3>
             <Report trips={trips} />
         </div>
       </div>
