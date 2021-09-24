@@ -88,8 +88,8 @@ export default function Report(props) {
             </div>
             <div className="fillRow">
                 <Statistic title={'Average per '+ (selectedMonth === 12 ? 'Month' : 'Day') + ':'} value={avg < 1000 ? avg + "g" : Math.round((avg/1000) * 10) / 10 + "kgs"}/>
-                <Statistic title={(selectedMonth === 12 ? 'Highest Month ' : 'Max Emissions in a Day') + ':'} value={max < 1000 ? max + "g" : Math.round((max/1000) * 10) / 10 + "kgs"}/>
-                <Statistic title={(selectedMonth === 12 ? 'Lowest (Active) Month ' : 'Min Emissions in an (Active) Day') + ':'} value={min < 1000 ? min + "g" : Math.round((min/1000) * 10) / 10 + "kgs"}/>
+                <Statistic title={(selectedMonth === 12 ? 'Highest Month' : 'Max Emissions in a Day') + ':'} value={max < 1000 ? max + "g" : Math.round((max/1000) * 10) / 10 + "kgs"}/>
+                <Statistic title={(selectedMonth === 12 ? 'Lowest (Active) Month' : 'Min Emissions in an (Active) Day') + ':'} value={min < 1000 ? min + "g" : Math.round((min/1000) * 10) / 10 + "kgs"}/>
                 <Statistic title='Total Emissions: ' value={total < 1000 ? total + "g" : Math.round((total/1000) * 10) / 10 + "kgs"}/>
             </div>
         </>
