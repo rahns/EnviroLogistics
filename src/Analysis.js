@@ -1,19 +1,21 @@
 import './App.css';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Trip } from './Classes';
+import Report from './components/Report';
 import { database } from './App';
 import React from 'react';
-import { Card, Typography, CardContent, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
+import { FormControl, InputLabel, Select, MenuItem, RadioGroup, Radio, FormControlLabel, FormLabel} from "@material-ui/core";
 
 
-export default function Graph(props) {
+export default function Analysis(props) {
   const [data, setData] = React.useState([]);
   const [monthly, setMonthly] = React.useState([]);
   const [yearly, setYearly] = React.useState([]);
   const [maximum, setMaximum] = React.useState(0);
   const [minimum, setMinimum] = React.useState(Number.POSITIVE_INFINITY);
-  const [average, setAverage] = React.useState(0);
+  const [graphType, setGraphType] = React.useState("line");
   const [graphPeriod, setPeriod] = React.useState(0);
+  const [trips, setTrips] = React.useState([]);
 
   React.useEffect(() => {
     switch (graphPeriod) {
@@ -41,6 +43,8 @@ export default function Graph(props) {
         }
         );
       }
+
+      setTrips(allTrips);
 
       const a = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
      
@@ -85,7 +89,6 @@ export default function Graph(props) {
         }
         avg += allTrips[i].emissions
       }
-      setAverage(avg / allTrips.length);
       setMonthly(monthly)
       setYearly(yearly)
       setData(monthly) // Default to monthly graph
@@ -95,58 +98,9 @@ export default function Graph(props) {
   return (
     <>
       <div className="row">
-        <div className="divBox" style={{ width: "100%", padding: 20 }}>
-          <Card
-            style={{
-              backgroundColor: "#89CFF0"
-            }}
-          >
-            <CardContent>
-
-              <Typography
-                style={{ fontSize: 30 }}
-                color="black"
-                gutterBottom
-              >
-                The following contains information on your report
-              </Typography>
-
-              <Typography style={{ fontsize: 25 }}>
-                Average: {average}
-              </Typography>
-
-              <Typography
-                style={{
-                  marginBottom: 12,
-                }}
-                color="textSecondary"
-              >
-                Good job keeping your gas emission average this low, to improve you could try .....
-              </Typography>
-              <Typography style={{ fontsize: 25 }}>
-                Min: {minimum}
-              </Typography>
-              <Typography
-                style={{
-                  marginBottom: 16,
-                }}
-                color="textSecondary"
-              >
-                Great work achieving this minimum!
-              </Typography>
-              <Typography style={{ fontsize: 25 }}>
-                Max: {maximum}
-              </Typography>
-              <Typography
-                style={{
-                  marginBottom: 16,
-                }}
-                color="textSecondary"
-              >
-                Great work achieving this maximum!
-              </Typography>
-            </CardContent>
-          </Card>
+        <div className="divBox" style={{ width: "100%", padding: 20}}>
+          <h3 style={{ marginTop: 0 }}>Emissions Statistics</h3>
+            <Report trips={trips} />
         </div>
       </div>
 
@@ -154,7 +108,7 @@ export default function Graph(props) {
         <div className="divBox" style={{ width: "100%", padding: 20 }}>
           <h3 style={{ marginTop: 0 }}>Emissions Graph</h3>
           <div style={{marginBottom: 10}}>
-            <FormControl variant="outlined" style={{minWidth: "15%"}}>
+            <FormControl variant="outlined" style={{minWidth: "15%", marginRight: 20}}>
               <InputLabel>Period</InputLabel>
               <Select
                 value={graphPeriod}
@@ -165,8 +119,25 @@ export default function Graph(props) {
                 <MenuItem value={1}>Yearly</MenuItem>
               </Select>
             </FormControl>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Graph Type:</FormLabel>
+              <RadioGroup row defaultValue="line" onChange={(e) => setGraphType(e.target.value)}>
+                <FormControlLabel value="line" control={<Radio color="primary" />} label="Line" />
+                <FormControlLabel value="bar" control={<Radio color="primary" />} label="Bar" />
+              </RadioGroup>
+            </FormControl>
           </div>
           <ResponsiveContainer width="100%" height={500}>
+            {graphType === "bar" ? 
+            <BarChart
+              data={data}
+              margin={{ bottom: 15, right: 50, top: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" dy={10} />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="Gas" name="CO2 emitted" unit="g" fill="#8884d8" />
+            </BarChart> :
             <LineChart
               data={data}
               margin={{ bottom: 15, right: 50, top: 20 }}>
@@ -181,9 +152,9 @@ export default function Graph(props) {
                 unit="g"
                 stroke="green"
                 activeDot={{ r: 8 }}
-
               />
             </LineChart>
+            }
           </ResponsiveContainer>
         </div>
       </div>

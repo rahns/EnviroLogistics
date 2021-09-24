@@ -6,7 +6,7 @@ import {BottomNavigation, BottomNavigationAction, Typography, Dialog, DialogActi
 import {Map, Timeline, LocalShipping, ExitToApp} from '@material-ui/icons';
 import Trips from './Trips';
 import Fleet from './Fleet';
-import Graph from './GraphPage'
+import Analysis from './Analysis'
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -71,7 +71,7 @@ export default function Main(props) {
             pageUpdater(<Trips pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user} />);
             break;
           case 1:
-            pageUpdater(<Graph pageUpdater={pageUpdater} addToDatabase={addToDatabase} user = {user}/>);
+            pageUpdater(<Analysis pageUpdater={pageUpdater} addToDatabase={addToDatabase} user = {user}/>);
             break;
           case 2:
             pageUpdater(<Fleet pageUpdater={pageUpdater} addToDatabase={addToDatabase} user={user}/>);
