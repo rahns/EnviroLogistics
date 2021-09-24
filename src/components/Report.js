@@ -20,7 +20,7 @@ function calculateMonthStats(trips, month, year) {
 
 export default function Report(props) {
     const [selectedYear, setYear] = React.useState(new Date());
-    const [selectedMonth, setMonth] = React.useState((new Date()).getMonth());
+    const [selectedMonth, setMonth] = React.useState(12);
     const [avg, setAvg] = React.useState(0);
     const [max, setMax] = React.useState(0);
     const [min, setMin] = React.useState(0);
@@ -49,7 +49,7 @@ export default function Report(props) {
             setTotal(total);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedMonth, selectedYear]);
+    }, [selectedMonth, selectedYear, trips]);
     return (
         <>
             <div style={{marginBottom: 10}}>
