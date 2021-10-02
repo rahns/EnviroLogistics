@@ -9,7 +9,18 @@ import Popup from 'reactjs-popup';
 
 function filterVehicles(filter, allVehicles, currentVehicles) {
   if (filter[0] !== ""){
-    return allVehicles.filter(vehicle => (vehicle.make + " " + vehicle.model) === filter[0]);
+    return allVehicles.filter(vehicle => {
+      console.log(vehicle.make);
+      if (filter[0] === vehicle.make) {
+        return filter[0] === vehicle.make;
+      }
+      else if (filter[0] === vehicle.model) {
+        return filter[0] === vehicle.model;
+      }
+      else if (filter[0] === vehicle.make + " " + vehicle.model) {
+        return filter[0] === vehicle.make + " " + vehicle.model;
+      }
+    });
   }
   if (filter[0] === ""){
     return allVehicles;
