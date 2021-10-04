@@ -16,7 +16,6 @@ export default function ListItemCustom({ itemObject, index }) {
             ContainerComponent="li"
           >
             <ListItemText
-              styles={{ fontFamily: "Quicksand" }}
               primary={`${itemObject.content}`}
             />
           </ListItem>

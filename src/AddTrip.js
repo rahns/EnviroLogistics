@@ -4,6 +4,8 @@ import { Button, Stepper, Step, StepLabel } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import Trips from './Trips';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 //import { database } from './App';
 
 import SelectWaypoints from './AddTrip/SelectWaypoints';
@@ -28,8 +30,12 @@ export default function AddTrip(props) {
   const classes = useStyles();
   const steps = ['Select Waypoints', 'Assign Vehicles', 'Extra Details'];
   const [activeStep, setActiveStep] = React.useState(0);
+  const [snackbarOpen, setSnackbar] = React.useState(false);
+  const [errorText, setErrorText] = React.useState('');
 
+  // Interesting state constants
   const [locsChecked, setLocsChecked] = React.useState([]);
+  const [vehiChecked, setVehiChecked] = React.useState([]);
   const [vehiLocs, setVehiLocs] = React.useState({});
   const [depot, setDepot] = React.useState(null);
 
@@ -51,16 +57,47 @@ export default function AddTrip(props) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const checkLocsExist = locsChecked.length <= 1 && activeStep === 0 ?
+    () => {
+      setErrorText("More than 1 location required for a trip!");
+      setSnackbar(true)
+    }
+    : activeStep === steps.length - 1 ?
+      () => props.pageUpdater(<Trips pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user} />) // TODO: Add to database instead of just returning to trips page
+      : handleNext
+
   const getStepContent = (step) => {
     switch (step) {
       case 0: // Waypoints
-        return (<SelectWaypoints locsChecked={locsChecked} setLocsChecked={setLocsChecked} handleToggle={handleToggle} handleDelete={handleDelete} setDepot={setDepot} depot={depot} />);
+        return (<SelectWaypoints
+          locsChecked={locsChecked}
+          setLocsChecked={setLocsChecked}
+          handleToggle={handleToggle}
+          handleDelete={handleDelete}
+          setDepot={setDepot}
+          depot={depot}
+          setSnackbar={setSnackbar}
+          setErrorText={setErrorText}
+        />);
 
       case 1: // Vehicles
-        return (<AssignVehicles locsChecked={locsChecked} handleToggle={handleToggle} vehiLocs={vehiLocs} setVehiLocs={setVehiLocs} />);
+        return (<AssignVehicles
+          locsChecked={locsChecked}
+          handleToggle={handleToggle}
+          vehiLocs={vehiLocs}
+          setVehiLocs={setVehiLocs}
+          depot={depot}
+          vehiChecked={vehiChecked}
+          setVehiChecked={setVehiChecked}
+        />);
 
       case 2: // Extra Details
-        return (<ExtraDetails />);
+        return (<ExtraDetails 
+          vehiLocs={vehiLocs}
+          depot={depot}
+          locsChecked={locsChecked}
+          vehiChecked={vehiChecked}
+        />);
 
       default:
         return 'Unknown step';
@@ -88,9 +125,7 @@ export default function AddTrip(props) {
           <Button
             variant="contained"
             color="primary"
-            onClick={activeStep === steps.length - 1 ?
-              () => props.pageUpdater(<Trips pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user} />) // TODO: Add to database instead of just returning to trips page
-              : handleNext}
+            onClick={checkLocsExist}
             className={classes.button}
           >
             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
@@ -113,6 +148,12 @@ export default function AddTrip(props) {
           </Stepper>
         </div>
       </div>
+
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbar(false)}>
+        <MuiAlert elevation={6} variant="filled" severity="warning" onClose={() => setSnackbar(false)}>
+          {errorText}
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 }

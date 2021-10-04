@@ -4,15 +4,11 @@ import MapBox from '../components/MapBox.js'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import CheckboxList from '../components/CheckboxList.js'
 import { Button, Grid, TextField, MenuItem } from "@material-ui/core";
 import { getExampleLocations, Location } from '../Classes';
 
-export default function SelectWaypoints({ locsChecked, setLocsChecked, handleToggle, handleDelete, setDepot, depot }) {
-  const [snackbarOpen, setSnackbar] = React.useState(false);
-  const [errorText, setErrorText] = React.useState('');
+export default function SelectWaypoints({ locsChecked, setLocsChecked, handleToggle, handleDelete, depot, setDepot, setErrorText, setSnackbar }) {
   const [locNickname, setlocNickname] = React.useState('');
   const [locations, setLocations] = React.useState(getExampleLocations());
   const [geocoderResult, setGeocoderResult] = React.useState([]);
@@ -77,7 +73,7 @@ export default function SelectWaypoints({ locsChecked, setLocsChecked, handleTog
             <TextField id="location-nickname-input" label="Nickname for Location" onChange={(e) => setlocNickname(e.target.value)} />
             <Button variant="contained" color="secondary" onClick={() => addLocation()} style={{ marginLeft: "20px" }}>Add From Marker</Button>
           </div>
-          <div>
+          <div style={{maxHeight: "50vh", overflow: 'auto'}}>
             <CheckboxList style={{ maxHeight: "initial", height: "auto", overflow: "scroll" }} items={locations} handleToggle={handleToggle(setLocsChecked)} checked={locsChecked} deletable={true} handleDelete={handleDelete(setLocations)} />
           </div>
           <div style={{ padding: "10px", marginTop: "auto" }}>
@@ -102,12 +98,6 @@ export default function SelectWaypoints({ locsChecked, setLocsChecked, handleTog
           <MapBox height="60vh" width="70vw" mapState={mapState} />
         </Grid>
       </Grid>
-
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbar(false)}>
-        <MuiAlert elevation={6} variant="filled" severity="warning" onClose={() => setSnackbar(false)}>
-          {errorText}
-        </MuiAlert>
-      </Snackbar>
     </div >
   )
 }

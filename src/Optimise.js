@@ -148,7 +148,7 @@ async function responseToTrip(date, response, locationIndexMapping, notes) {
     return new Trip(date, await vehicleTrips, notes);
 }
 
-async function tourToVehicleTrip(tour, locationIndexMapping) {
+export async function tourToVehicleTrip(tour, locationIndexMapping) {
     let vehicle = JSON.parse(tour.vehicleId);
 
     let tripLegs = [];

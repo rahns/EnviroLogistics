@@ -5,23 +5,28 @@ import CheckboxList from '../components/CheckboxList.js';
 import DragDropListOfLists from '../components/DnDListofLists/DnDListofLists';
 import { getExampleCars } from '../Classes';
 
-export default function AssignVehicles({ locsChecked, handleToggle, vehiLocs, setVehiLocs }) {
+export default function AssignVehicles({ locsChecked, handleToggle, vehiLocs, setVehiLocs, depot, vehiChecked, setVehiChecked }) {
     //vehicle page constants
     const cars = getExampleCars();
-    const [vehiChecked, setVehiChecked] = React.useState([]);
 
     React.useEffect(() => {
-        setVehiLocs(initVehiLocs(vehiChecked, locsChecked));
+        const depotPos = locsChecked.indexOf(depot);
+        const noDepotLocs = locsChecked.slice(0, depotPos).concat(locsChecked.slice(depotPos + 1));
+        setVehiLocs(initVehiLocs(vehiChecked, noDepotLocs));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vehiChecked, locsChecked]);
 
     return (
         <div>
             <Grid container>
-                <Grid item xs>
+                <Grid item xs style={{ maxHeight: "70vh", overflow: 'auto' }}>
                     <CheckboxList items={cars} handleToggle={handleToggle(setVehiChecked)} checked={vehiChecked} />
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={9}>
+                    <div style={{ textAlign: 'center' }}>
+                        <p>Drag and drop the locations between your selected cars. Rearrange the locations in the order you would like the cars to visit.</p>
+                        <p><b>Note: All vehicles will start and finish at the depot, which is currently set to {depot.toString()}.</b></p>
+                    </div>
                     <DragDropListOfLists stateUpdater={setVehiLocs} state={vehiLocs} />
                 </Grid>
             </Grid>
