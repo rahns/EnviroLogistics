@@ -2,14 +2,16 @@
 
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+//import makeStyles from "@material-ui/core/styles/makeStyles";
 import { DragDropContext } from "react-beautiful-dnd";
 import Column from "./Column";
 
-const useStyles = makeStyles((theme) => ({}));
+// const useStyles = makeStyles((theme) => ({
+
+// }));
 
 export default function DragDropListOfLists({ stateUpdater, state }) {
-  const classes = useStyles();
+  //const classes = useStyles();
 
   /*
     TODO: It's really important how you structure your data!!!
@@ -39,8 +41,6 @@ export default function DragDropListOfLists({ stateUpdater, state }) {
   //     list: []
   //   }
   // };
-
-
 
   const onDragEnd = ({ source, destination }) => {
     // Make sure we have a valid destination
