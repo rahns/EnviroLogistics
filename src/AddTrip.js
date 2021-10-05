@@ -38,6 +38,7 @@ export default function AddTrip(props) {
   const [vehiChecked, setVehiChecked] = React.useState([]);
   const [vehiLocs, setVehiLocs] = React.useState({});
   const [depot, setDepot] = React.useState(null);
+  const [trip, setTrip] = React.useState(null);
 
   // Setting depot if previously selected isn't available anymore
   React.useEffect(() => {
@@ -63,7 +64,9 @@ export default function AddTrip(props) {
       setSnackbar(true)
     }
     : activeStep === steps.length - 1 ?
-      () => props.pageUpdater(<Trips pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user} />) // TODO: Add to database instead of just returning to trips page
+      () => {
+        props.addToDatabase('trips/', JSON.stringify(trip));
+        props.pageUpdater(<Trips pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user} />)}
       : handleNext
 
   const getStepContent = (step) => {
@@ -97,6 +100,7 @@ export default function AddTrip(props) {
           depot={depot}
           locsChecked={locsChecked}
           vehiChecked={vehiChecked}
+          setTrip={setTrip}
         />);
 
       default:

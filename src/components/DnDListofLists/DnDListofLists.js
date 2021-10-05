@@ -61,14 +61,13 @@ export default function DragDropListOfLists({ stateUpdater, state }) {
     if (start === end) {
       // Move the item within the list
       // Start by making a new list without the dragged item
-      console.log(start);
       const newList = start.list.filter((_, idx) => idx !== source.index);
 
       // Then insert the item at the right location
       newList.splice(destination.index, 0, start.list[source.index]);
 
       // Then create a new copy of the column object
-      const newCol = {
+      const newCol = {...start,
         id: start.id,
         list: newList
       };
@@ -82,7 +81,7 @@ export default function DragDropListOfLists({ stateUpdater, state }) {
       const newStartList = start.list.filter((_, idx) => idx !== source.index);
 
       // Create a new start column
-      const newStartCol = {
+      const newStartCol = {...start,
         id: start.id,
         list: newStartList
       };
@@ -94,7 +93,7 @@ export default function DragDropListOfLists({ stateUpdater, state }) {
       newEndList.splice(destination.index, 0, start.list[source.index]);
 
       // Create a new end column
-      const newEndCol = {
+      const newEndCol = {...end,
         id: end.id,
         list: newEndList
       };

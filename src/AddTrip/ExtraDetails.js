@@ -6,7 +6,7 @@ import MapBox from '../components/MapBox.js';
 import { optimise, tourToVehicleTrip } from '../Optimise';
 import { Trip } from "../Classes";
 
-export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot }) {
+export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot, setTrip }) {
     //details page constants
     const [selectedDate, handleDateChange] = React.useState(new Date());
     const [notes, setNotes] = React.useState("");
@@ -27,37 +27,56 @@ export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot
     //     stops: [{location:{index:0}}, {location:{index:1}}, {location:{index:0}}]
     // }
     const vehiLoctoTour = (vehiLoc) => {
+        console.log(vehiLoc);
         let tour = { vehicleId: JSON.stringify(vehiLoc.vehicle), stops: [{ location: { index: 0 } }] };
         vehiLoc.list.forEach(loc => tour["stops"].push({ location: { index: depotAndLocs.indexOf(loc.content) } }))
         tour["stops"].push({ location: { index: 0 } });
         return tour;
     };
 
-    const tours = Object.keys(vehiLocs).reduce((prev, key) => [...prev, vehiLoctoTour(vehiLocs[key])], []);
+    const tours = Object.keys(vehiLocs).reduce((prev, key) => {
+        if (vehiLocs[key].list.length !== 0) {
+            return [...prev, vehiLoctoTour(vehiLocs[key])]
+        } else {
+            return prev
+        }
+    }, [])
 
-    const [tripToUse, setTripToUse] = React.useState(getUnoptimised(selectedDate, tours, locationIndexMapping, notes));
     const [tripMode, setTripMode] = React.useState("Normal");
-    const [mapState, setMapState] = React.useState({}); //tripToUse.getMapState()
+    const [mapState, setMapState] = React.useState({});
 
+    React.useEffect(() => {
+        getUnoptimised(selectedDate, tours, locationIndexMapping, notes).then(function(trip) { 
+            setTrip(trip); 
+            setMapState(trip.getMapState()); 
+            console.log(trip); });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const handleRadio = (event) => {
         if (event.target.value === "Optimised") {
-            setTripToUse(optimise(selectedDate, vehiChecked, noDepot, depot, notes));
-            setTripMode("Optimised");
+            optimise(selectedDate, vehiChecked, noDepot, depot, notes).then(function(trip) { 
+                setTrip(trip); 
+                setMapState(trip.getMapState()); 
+                setTripMode("Optimised"); 
+                console.log(trip); 
+            });
+            console.log("Optimised hit");
         } else {
-            setTripToUse(getUnoptimised(selectedDate, tours, locationIndexMapping, notes));
-            setTripMode("Normal");
+            getUnoptimised(selectedDate, tours, locationIndexMapping, notes).then(function(trip) { 
+                setTrip(trip); 
+                setMapState(trip.getMapState()); 
+                setTripMode("Normal"); 
+                console.log(trip); 
+            });
         }
-        //setMapState(tripToUse.getMapState());
-        console.log("Trip Here:");
-        console.log(tripToUse);
     }
 
     return (
         <div>
             <Grid container>
                 <Grid item xs style={{ display: "flex", flexDirection: "column" }}>
-                    <div>
+                    <div style={{ padding: "10px" }}>
                         <DateTimePicker
                             autoOk
                             ampm={false}
@@ -68,22 +87,24 @@ export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot
                             showTodayButton
                         />
                     </div>
-                    <div>
+
+                    <div style={{ padding: "10px" }}>
+                        <RadioGroup row value={tripMode} label="Select Trip Mode">
+                            <FormControlLabel checked={tripMode === "Normal"} onChange={handleRadio} value="Normal" control={<Radio />} label="Normal" />
+                            <FormControlLabel checked={tripMode === "Optimised"} onChange={handleRadio} value="Optimised" control={<Radio />} label="Optimised" />
+                        </RadioGroup>
+                    </div>
+
+                    <div style={{ padding: "10px" }}>
                         <TextField
                             id="outlined-multiline-static"
                             label="Extra Notes"
                             multiline
                             variant="outlined"
-                            //onChange={(event) => setNotes(event.target.value)}
+                            onChange={(event) => setNotes(event.target.value)}
                         />
                     </div>
 
-                    <div>
-                        <RadioGroup row value={tripToUse} label="Select Trip Mode">
-                            <FormControlLabel checked={tripMode === "Normal"} onChange={handleRadio} value="Normal" control={<Radio />} label="Normal" />
-                            <FormControlLabel checked={tripMode === "Optimised"} onChange={handleRadio} value="Optimised" control={<Radio />} label="Optimised" />
-                        </RadioGroup>
-                    </div>
                 </Grid>
                 <Grid item xs>
                     <MapBox height="60vh" width="70vw" mapState={mapState} />
@@ -94,6 +115,6 @@ export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot
 }
 
 async function getUnoptimised(selectedDate, tours, locationIndexMapping, notes) {
-    let vehicleTrips = Promise.all(tours.map(async tour => await tourToVehicleTrip(tour, locationIndexMapping)));
-    return new Trip(selectedDate, await vehicleTrips, notes);
+    let vehicleTrips = await Promise.all(tours.map(async tour => await tourToVehicleTrip(tour, locationIndexMapping)));
+    return new Trip(selectedDate, vehicleTrips, notes);
 }

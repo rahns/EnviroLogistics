@@ -45,11 +45,11 @@ const splitToChunks = (array, parts) => {
 const initVehiLocs = (vehicles, locs) => {
     let chunkedLocs = splitToChunks(locs.map((loc, idx) => ({ id: idx.toString(), content: loc })), vehicles.length);
     let result = vehicles.reduce((obj, veh, idx) => {
-        return {
-            ...obj, [veh.toString()]: {
-                id: veh.toString(), vehicle: veh, list: chunkedLocs[idx]
-            }
-        }
+        obj[veh.toString()] = {
+            id: veh.toString(), vehicle: veh, list: chunkedLocs[idx]
+        };
+        console.log(obj[veh.toString()]);
+        return obj;
     }
         , {}
     )
