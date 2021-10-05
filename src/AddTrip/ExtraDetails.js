@@ -6,7 +6,7 @@ import MapBox from '../components/MapBox.js';
 import { optimise, tourToVehicleTrip } from '../Optimise';
 import { Trip } from "../Classes";
 
-export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot, setTrip }) {
+export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot, setTrip, currentTrip }) {
     //details page constants
     const [selectedDate, handleDateChange] = React.useState(new Date());
     const [notes, setNotes] = React.useState("");
@@ -53,6 +53,12 @@ export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    React.useEffect(() => {
+        const newTrip = {...currentTrip, date: selectedDate, notes: notes };
+        setTrip(newTrip);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [notes, selectedDate])
+
     const handleRadio = (event) => {
         if (event.target.value === "Optimised") {
             optimise(selectedDate, vehiChecked, noDepot, depot, notes).then(function(trip) { 
@@ -61,7 +67,6 @@ export default function ExtraDetails({ vehiLocs, locsChecked, vehiChecked, depot
                 setTripMode("Optimised"); 
                 console.log(trip); 
             });
-            console.log("Optimised hit");
         } else {
             getUnoptimised(selectedDate, tours, locationIndexMapping, notes).then(function(trip) { 
                 setTrip(trip); 

@@ -58,16 +58,14 @@ export default function AddTrip(props) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const checkLocsExist = locsChecked.length <= 1 && activeStep === 0 ?
-    () => {
-      setErrorText("More than 1 location required for a trip!");
-      setSnackbar(true)
-    }
-    : activeStep === steps.length - 1 ?
-      () => {
-        props.addToDatabase('trips/', JSON.stringify(trip));
-        props.pageUpdater(<Trips pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user} />)}
-      : handleNext
+  const checkLocsExist = () => {
+    setErrorText("More than 1 location required for a trip!");
+    setSnackbar(true)
+  }
+  const finish = () => {
+    props.addToDatabase('trips/', JSON.stringify(trip));
+    props.pageUpdater(<Trips pageUpdater={props.pageUpdater} addToDatabase={props.addToDatabase} user={props.user} />)
+  }
 
   const getStepContent = (step) => {
     switch (step) {
@@ -95,12 +93,13 @@ export default function AddTrip(props) {
         />);
 
       case 2: // Extra Details
-        return (<ExtraDetails 
+        return (<ExtraDetails
           vehiLocs={vehiLocs}
           depot={depot}
           locsChecked={locsChecked}
           vehiChecked={vehiChecked}
           setTrip={setTrip}
+          currentTrip={trip}
         />);
 
       default:
@@ -129,7 +128,7 @@ export default function AddTrip(props) {
           <Button
             variant="contained"
             color="primary"
-            onClick={checkLocsExist}
+            onClick={locsChecked.length <= 1 && activeStep === 0 ? checkLocsExist : activeStep === steps.length - 1 ? finish : handleNext}
             className={classes.button}
           >
             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
