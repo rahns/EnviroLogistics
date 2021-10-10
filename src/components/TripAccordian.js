@@ -132,6 +132,7 @@ function VehicleAccordian(props) {
 }
 
 function DisplayLeg(props) {
+  const classes = useStyles();
   const origin_lat = props.leg.startLocation.lat;
   const origin_long = props.leg.startLocation.long;
   const dest_lat = props.leg.endLocation.lat;
@@ -142,7 +143,7 @@ function DisplayLeg(props) {
     <div className="divBox" style={{marginBottom: 10, width: "calc(100% - 20px)"}}>
       <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 5}}>
         <div style={{marginRight: "auto", marginLeft: 0}}>
-          <Tooltip title="Waypoints" style={{margin: 4, marginLeft: 0}}><Chip variant="outlined" icon={<Room />} label={<>{props.leg.startLocation.nickname} to {props.leg.endLocation.nickname}</>}/></Tooltip>
+          <div className="row" style={{margin: 0, padding: 0}}><Tooltip title="Waypoints" style={{margin: 4, marginLeft: 0}}><Chip classes={{ root: classes.wrapChipRoot, label: classes.wrapChipLabel, }} variant="outlined" color='primary' label={<Typography variant="body2">{props.leg.startLocation.nickname} to {props.leg.endLocation.nickname}</Typography>} /></Tooltip></div>
           <Tooltip title="Duration" style={{margin: 4, marginLeft: 0}}><Chip icon={<Timer />} label={props.leg.duration < 121 ? props.leg.duration + " minutes" : Math.round((props.leg.duration/60) * 10) / 10 + " hours"}/></Tooltip>
           <Tooltip title="Distance" style={{margin: 4, marginLeft: 0}}><Chip icon={<Straighten />} label={props.leg.distance + "km"} /></Tooltip>
           <Tooltip title={<> Amount of CO<sub>2</sub> Emitted </>} style={{margin: 4, marginLeft: 0}}><Chip icon={<Eco />} label={props.leg.legEmissions < 1000 ? props.leg.legEmissions + "g of CO2" : Math.round((props.leg.legEmissions/1000) * 10) / 10 + "kgs of CO2"} /></Tooltip>
